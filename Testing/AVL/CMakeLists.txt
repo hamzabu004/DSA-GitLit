@@ -17,6 +17,7 @@ enable_testing()
 add_executable(
         Gtest_Proj
         main.cpp
+        ../../STL_STRUCTURES/MyString.h
 )
 target_link_libraries(
         Gtest_Proj

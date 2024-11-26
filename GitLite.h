@@ -4,11 +4,14 @@
 
 #ifndef GITLITE_H
 #define GITLITE_H
+#include "STL_STRUCTURES/MyString.h"
+#include <iostream>
 
-
+using std::endl;
+using std::cout;
 
 class GitLite {
-
+	MyString title_str = "   ________.__  __  .____    .__  __          \n  /  _____/|__|/  |_|    |   |__|/  |_  ____ \n /   \\  ___|  \\   __\\    |   |  \\   __\\/ __ \\ \n \\    \\_\\  \\  ||  | |    |___|  ||  | \\  ___/ \n  \\______  /__||__| |_______ \\__||__|  \\___  > \n         \\/                 \\/             \\/";
 public:
     void welcome();
     void init_menu();
@@ -19,6 +22,7 @@ public:
     void git_log();
     void git_checkout();
     void git_reset();
+    void run();
 
 };
 

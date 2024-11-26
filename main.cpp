@@ -1,7 +1,10 @@
 #include <iostream>
 
+#include "GitLite.h"
+
 int main()
 {
-    std::cout << "Hello, World!" << std::endl;
+    GitLite git;
+    git.run();
     return 0;
 }
