@@ -12,16 +12,16 @@ using std::endl;
 
 
 
-
+template <typename T>
 struct TreeNode {
-    int data;
+    T data;
     TreeNode* next;
 };
 
 template <typename T>
 class MyList {
-    TreeNode* head;
-    TreeNode* tail;
+    TreeNode<T>* head;
+    TreeNode<T>* tail;
     int size;
 public:
     // insert, remove, print, search, size, empty, clear
