@@ -27,7 +27,7 @@ public:
     // insert, remove, print, search, size, empty, clear
     MyList(): head(nullptr), tail(nullptr), size(0) {}
     void insert(T data) {
-        TreeNode* new_node = new TreeNode;
+        TreeNode<T>* new_node = new TreeNode<T>;
         new_node->data = data;
         new_node->next = nullptr;
         if (head == nullptr) {
@@ -43,8 +43,8 @@ public:
         if (head == nullptr) {
             throw std::underflow_error("List is empty");
         }
-        TreeNode* temp = head;
-        TreeNode* prev = nullptr;
+        TreeNode<T>* temp = head;
+        TreeNode<T>* prev = nullptr;
         while (temp != nullptr) {
             if (temp->data == data) {
                 if (prev == nullptr) {
@@ -62,7 +62,7 @@ public:
 
     }
     void print() {
-        TreeNode* temp = head;
+        TreeNode<T>* temp = head;
         while (temp != nullptr) {
             cout << temp->data << " ";
             temp = temp->next;
@@ -73,7 +73,7 @@ public:
         if (index >= size) {
             throw std::out_of_range("Index out of range");
         }
-        TreeNode* temp = head;
+        TreeNode<T>* temp = head;
         for (int i = 0; i < index; i++) {
             temp = temp->next;
         }
