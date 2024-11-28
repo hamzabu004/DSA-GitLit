@@ -8,14 +8,17 @@
 enum tree_type {
     AVL,
     RBT,
-    BT
+    BTree
 };
 
-enum color {
+enum rdt_color {
     RED,
     BLACK
 };
 
-
+enum hash_type {
+    I_HASH,
+    SHA256
+};
 
 #endif //GLOBALS_H
