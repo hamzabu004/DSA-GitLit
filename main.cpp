@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GitLite.h"
+#include "GitLite.cpp"
 
 int main()
 {
