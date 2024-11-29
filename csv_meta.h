@@ -7,13 +7,17 @@
 #include <filesystem>
 
 #include "STL_STRUCTURES/MyString.h"
-// #include "STL_STRUCTURES/MYList.h"
+#include "STL_STRUCTURES/MYList.h"
 
 
 struct CSV_META {
     std::filesystem::path filename;
     int columns;
-    // MyList<int> col_names; // array of col names
+    MyList<MyString> col_names; // array of col names
+    MyList<int> selected_cols;
+
+
+
     // array of selected cols
 
 
