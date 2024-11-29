@@ -7,7 +7,7 @@
 #include <filesystem>
 
 #include "STL_STRUCTURES/MyString.h"
-#include "STL_STRUCTURES/MYList.h"
+#include "STL_STRUCTURES/MyList.h"
 
 
 struct CSV_META {

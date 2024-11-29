@@ -11,7 +11,7 @@
 using std::ios;
 using std::string;
 using std::getline;
-#include "../STL_STRUCTURES/MYList.h"
+#include "../STL_STRUCTURES/MyList.h"
 #include "../STL_STRUCTURES/MyString.h"
 
 inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
