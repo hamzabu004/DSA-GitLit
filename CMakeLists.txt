@@ -8,5 +8,5 @@ add_executable(DSA_GitLit main.cpp
         GitLite.h
         GLOBALS.h
         Utils/file_operations.h
-        STL_STRUCTURES/MyList.cpp
+        STL_STRUCTURES/MyString.h
         STL_STRUCTURES/MyList.h)
