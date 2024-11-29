@@ -82,6 +82,15 @@ public:
     int get_size() {
         return size;
     }
+    friend std::ostream& operator<<(std::ostream& os, MyList<T>& list) {
+        TreeNode<T>* temp = list.head;
+        while (temp != nullptr) {
+            os << temp->data << " ";
+            temp = temp->next;
+        }
+        os << endl;
+        return os;
+    }
 };
 
 
