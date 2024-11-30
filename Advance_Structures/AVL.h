@@ -6,48 +6,26 @@
 #define AVL_H
 
 #include <iostream>
+#include <filesystem>
+
+#include "CSV.h"
+#include "../STL_STRUCTURES/MyList.h"
 
 using namespace std;
+using namespace std::filesystem;
 
-template <typename T>
-class AVLTree {
-private:
-    struct Node {
-        T data;
-        Node* left;
-        Node* right;
-        int height;
 
-        Node(const T& value);
-    };
-
-    Node* root;
-
-    int getHeight(Node* node);
-    int getBalanceFactor(Node* node);
-    void updateHeight(Node* node);
-    Node* rotateRight(Node* y);
-    Node* rotateLeft(Node* x);
-    Node* balance(Node* node);
-    Node* insertNode(Node* node, const T& value);
-    Node* findMinNode(Node* node);
-    Node* deleteNode(Node* node, const T& value);
-    Node* searchNode(Node* node, const T& value);
-    void clearTree(Node* node);
-    void inorderTraversalHelper(Node* node);
-
-    // Custom max function to replace std::max
-    T max(const T& a, const T& b);
-
-public:
-    AVLTree();
-    ~AVLTree();
-
-    void insert(const T& value);
-    void remove(const T& value);
-    bool update(const T& oldValue, const T& newValue);
-    bool contains(const T& value);
-    void inorderTraversal();
+template<typename T>
+struct AVL_NODE {
+    T key;
+    MyList<csv_row> data;
+    filesystem::path left_child;
+    filesystem::path right_child;
+    int height;
+    // node hash
+    MyString hash;
 };
+
+
 
 #endif //AVL_H
