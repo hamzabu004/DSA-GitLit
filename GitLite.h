@@ -48,7 +48,6 @@ public:
     void git_checkout();
     void git_reset();
     void run();
-
 };
 
 

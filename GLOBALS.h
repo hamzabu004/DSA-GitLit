@@ -5,6 +5,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include "STL_STRUCTURES/MyString.h"
+
 enum tree_type {
     AVL,
     RBT,
@@ -44,8 +46,7 @@ enum admission_type {
     Emergency,
 };
 
-MyString blood_group_str[8] = {"A-", "A+", "B-", "B+", "O-", "O+", "AB-",
-    "AB+"};
+inline MyString blood_group_str[8] ;
 
 
 enum test_results {
@@ -54,9 +55,9 @@ enum test_results {
     Inconclusive
 };
 
-MyString test_result_str[3] = {"Normal", "Abnormal", "Inconclusive"};
+inline MyString test_result_str[3];
 
-
+void init_();
 
 
 #endif //GLOBALS_H

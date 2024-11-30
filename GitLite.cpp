@@ -7,7 +7,7 @@
 #include "GLOBALS.h"
 #include "Utils/file_operations.h"
 
-inline void GitLite::welcome() {
+void GitLite::welcome() {
     cout << title_str << endl;
 
     cout << "Welcome to GitLite\n";
@@ -65,6 +65,6 @@ inline void GitLite::welcome() {
 
 }
 
-inline void GitLite::run() {
+void GitLite::run() {
     welcome();
 }

@@ -16,8 +16,11 @@ enable_testing()
 
 add_executable(
         Gtest_Proj
-        string_n_list.cpp
+#        string_n_list.cpp
+        avl_test.cpp
         ../STL_STRUCTURES/MyString.h
+        ../Advance_Structures/AVL.h
+        ../Advance_Structures/CSV.h
 )
 target_link_libraries(
         Gtest_Proj

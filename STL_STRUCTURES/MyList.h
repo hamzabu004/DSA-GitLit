@@ -79,7 +79,7 @@ public:
         }
         return temp->data;
     }
-    int get_size() {
+    int get_size() const {
         return size;
     }
     friend std::ostream& operator<<(std::ostream& os, MyList<T>& list) {

@@ -6,6 +6,10 @@
 #define CSV_H
 
 #include "../STL_STRUCTURES/MyString.h"
+#include <fstream>
+
+using std::fstream;
+using std::endl;
 
 struct csv_row {
      MyString name;
@@ -23,6 +27,25 @@ struct csv_row {
      MyString discharge_date;
      MyString medication;
      int test_result{};
+
+     friend fstream& operator<<(fstream &file_stream, const csv_row &row) {
+         file_stream << row.name << endl;
+         file_stream << row.age << endl;
+         file_stream << row.gender << endl;
+         file_stream << row.blood_group << endl;
+         file_stream << row.medical_condition << endl;
+         file_stream << row.date << endl;
+         file_stream << row.doctor << endl;
+         file_stream << row.hospital << endl;
+         file_stream << row.insurance_provider << endl;
+         file_stream << row.billing_sum << endl;
+         file_stream << row.room_no << endl;
+         file_stream << row.admission_type << endl;
+         file_stream << row.discharge_date << endl;
+         file_stream << row.medication << endl;
+         file_stream << row.test_result << endl;
+         return file_stream;
+     }
 };
 
 
