@@ -28,7 +28,7 @@ struct AVL_NODE {
     int height;
     // node hash
     MyString hash;
-    AVL_NODE(): left_child(""), right_child(""), height(0), hash("") {}
+    AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0), hash("") {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
         file_stream << node.key << endl;

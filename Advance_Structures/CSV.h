@@ -16,8 +16,8 @@ using std::endl;
 struct csv_row {
      MyString name;
      int age {};
-     int gender{};
-     int blood_group{};
+     MyString gender{};
+     MyString blood_group{};
      MyString medical_condition;
      MyString date;
      MyString doctor;
@@ -25,10 +25,10 @@ struct csv_row {
      MyString insurance_provider;
      float billing_sum{};
      int room_no{};
-     int admission_type{};
+     MyString admission_type{};
      MyString discharge_date;
      MyString medication;
-     int test_result{};
+     MyString test_result{};
 
      friend fstream& operator<<(fstream &file_stream, const csv_row &row) {
          file_stream << row.name << endl;
@@ -54,9 +54,7 @@ struct csv_row {
          file_stream >> row.age;
          move_pointer_ahead(file_stream);
          file_stream >> row.gender;
-         move_pointer_ahead(file_stream);
          file_stream >> row.blood_group;
-         move_pointer_ahead(file_stream);
          file_stream >> row.medical_condition;
          file_stream >> row.date;
          file_stream >> row.doctor;
@@ -67,11 +65,9 @@ struct csv_row {
          file_stream >> row.room_no;
          move_pointer_ahead(file_stream);
          file_stream >> row.admission_type;
-         move_pointer_ahead(file_stream);
          file_stream >> row.discharge_date;
          file_stream >> row.medication;
          file_stream >> row.test_result;
-         move_pointer_ahead(file_stream);
          return file_stream;
      }
     friend std::ostream& operator<<(std::ostream &os, const csv_row &row) {
