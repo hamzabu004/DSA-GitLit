@@ -8,6 +8,8 @@
 #include "../STL_STRUCTURES/MyString.h"
 #include <fstream>
 
+#include "../Utils/file_operations.h"
+
 using std::fstream;
 using std::endl;
 
@@ -50,19 +52,26 @@ struct csv_row {
      {
          file_stream >> row.name;
          file_stream >> row.age;
+         move_pointer_ahead(file_stream);
          file_stream >> row.gender;
+         move_pointer_ahead(file_stream);
          file_stream >> row.blood_group;
+         move_pointer_ahead(file_stream);
          file_stream >> row.medical_condition;
          file_stream >> row.date;
          file_stream >> row.doctor;
          file_stream >> row.hospital;
          file_stream >> row.insurance_provider;
          file_stream >> row.billing_sum;
+         move_pointer_ahead(file_stream);
          file_stream >> row.room_no;
+         move_pointer_ahead(file_stream);
          file_stream >> row.admission_type;
+         move_pointer_ahead(file_stream);
          file_stream >> row.discharge_date;
          file_stream >> row.medication;
          file_stream >> row.test_result;
+         move_pointer_ahead(file_stream);
          return file_stream;
      }
 };

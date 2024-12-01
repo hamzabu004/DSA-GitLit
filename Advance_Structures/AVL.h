@@ -11,6 +11,7 @@
 
 #include "CSV.h"
 #include "../STL_STRUCTURES/MyList.h"
+#include "../Utils/file_operations.h"
 
 using namespace std;
 using namespace std::filesystem;
@@ -51,25 +52,17 @@ struct AVL_NODE {
         file_stream >> node.key;
         int size;
         file_stream >> size;
+        move_pointer_ahead(file_stream);
         for (int i = 0; i < size; i++) {
             csv_row row;
             file_stream >> row;
             node.data.insert(row);
         }
         string left, right;
-        file_stream >> left;
-        if (left == "NULL") {
-            node.left_child = "";
-        } else {
-            node.left_child = left;
-        }
-        file_stream >> right;
-        if (right == "NULL") {
-            node.right_child = "";
-        } else {
-            node.right_child = right;
-        }
+        file_stream >> node.left_child;
+        file_stream >> node.right_child;
         file_stream >> node.height;
+        move_pointer_ahead(file_stream);
         file_stream >> node.hash;
         return file_stream;
     }

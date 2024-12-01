@@ -42,7 +42,7 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
 // read specified entries for specific columns
 
 //open file funciton
-bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
+inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
 {
     if(mode == ios::in){
           file.open(csv_path, ios::in);
@@ -56,6 +56,12 @@ bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::i
     }
     return true;
 }
+
+inline void move_pointer_ahead(fstream& file, int n = 1) {
+    file.seekp(n, ios::cur);
+}
+
+
 
 
 
