@@ -91,6 +91,20 @@ public:
         os << endl;
         return os;
     }
+    void clear() {
+        TreeNode<T>* temp = head;
+        while (temp != nullptr) {
+            TreeNode<T>* next = temp->next;
+            delete temp;
+            temp = next;
+        }
+        head = nullptr;
+        tail = nullptr;
+        size = 0;
+    }
+    ~MyList() {
+        clear();
+    }
 };
 
 

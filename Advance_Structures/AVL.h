@@ -81,6 +81,7 @@ void write_avl_node(path node_path, AVL_NODE<T> &node) {
 
 template<typename T>
 void read_avl_node(path node_path, AVL_NODE<T> &node) {
+    node.data.clear();
     fstream file;
     open_file(file, node_path, ios::in);
     file >> node;
@@ -141,12 +142,12 @@ path right_rotate(path root) {
     // temp->right = root;
     read_avl_node<T>(root_left_child, curr_node);
     path root_left_right_child = curr_node.right_child;
-    curr_node.right_child = root;
+    curr_node.right_child = root.c_str();
     write_avl_node<T>(root_left_child, curr_node);
 
     // root->left = temp->right;
     read_avl_node<T>(root, curr_node);
-    curr_node.left_child = root_left_right_child;
+    curr_node.left_child = root_left_right_child.c_str();
     write_avl_node(root, curr_node);
 
 
@@ -176,12 +177,12 @@ path left_rotate(path root) {
     // temp->left = root;
     read_avl_node<T>(root_right_child, curr_node);
     path root_right_left_child = curr_node.left_child;
-    curr_node.left_child = root;
+    curr_node.left_child = root.c_str();
     write_avl_node<T>(root_right_child, curr_node);
 
     // root->right = temp->left;
     read_avl_node<T>(root, curr_node);
-    curr_node.right_child = root_right_left_child;
+    curr_node.right_child = root_right_left_child.c_str();
     write_avl_node<T>(root, curr_node);
 
 
@@ -211,17 +212,21 @@ filesystem::path balance_avl(filesystem::path root) {
                 path right_child = curr_node.right_child;
                 if (get_balance_factor<T>(right_child) == -1) {
                     right_child = right_rotate<T>(right_child);
+                    curr_node.right_child = right_child.c_str();
+                    write_avl_node<T>(root, curr_node);
                 }
-                root = left_rotate<T>(root);
+                root = left_rotate<T>(root).c_str();
                 break;
             }
             case -2:{
                 path left_child = curr_node.left_child;
                 if (get_balance_factor<T>(left_child) == 1) {
                     left_child = left_rotate<T>(left_child);
+                    curr_node.left_child = left_child.c_str();
+                    write_avl_node<T>(root, curr_node);
                 }
                 cout << "Right Shift" << endl;
-                root = right_rotate<T>(root);
+                root = right_rotate<T>(root).c_str();
                 break;
             }
             default: ;
@@ -273,7 +278,8 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     if (root_path == "NULL") {
         cout << "File not found\n inferring that first node of tree...\n";
         // create file.
-        filesystem::path node_path = node.key;
+        root_path = "";
+        filesystem::path node_path = root_path / node.key;
         file.open(node_path, ios::out);
         file << node;
         file.close();
