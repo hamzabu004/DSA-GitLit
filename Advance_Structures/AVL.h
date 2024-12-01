@@ -36,15 +36,15 @@ struct AVL_NODE {
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
         }
-        if (node.left_child == "") {
+        if (node.left_child == "NULL" || node.left_child == "") {
             file_stream << "NULL" << endl;
         } else {
-            file_stream << node.left_child << endl;
+            file_stream << node.left_child.string() << endl;
         }
-        if (node.right_child == "") {
+        if (node.right_child == "" || node.right_child == "NULL") {
             file_stream << "NULL" << endl;
         } else {
-            file_stream << node.right_child << endl;
+            file_stream << node.right_child.string() << endl;
         }
         file_stream << node.height << endl;
         file_stream << node.hash << endl;
