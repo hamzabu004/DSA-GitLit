@@ -50,7 +50,7 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     if (root_path == "") {
         cout << "File not found\n inferring that first node of tree...\n";
         // create file.
-        filesystem::path node_path = root_path / node.key;
+        filesystem::path node_path = node.key;
         file.open(node_path, ios::out);
         file << node;
         file.close();
@@ -64,8 +64,11 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     // close that it would be open in other
     file.close();
     // now move to left or right
-
-
+/*
+ *
+ *
+ *
+ */
     return root_path;
 }
 
