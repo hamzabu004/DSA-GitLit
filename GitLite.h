@@ -17,9 +17,6 @@ using std::endl;
 using std::cout;
 using std::cin;
 
-
-
-
 class GitLite {
     struct {
         // pointer to tree
@@ -49,7 +46,5 @@ public:
     void git_reset();
     void run();
 };
-
-
 
 #endif //GITLITE_H

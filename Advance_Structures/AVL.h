@@ -15,7 +15,6 @@
 using namespace std;
 using namespace std::filesystem;
 
-
 template<typename T>
 struct AVL_NODE {
     T key;
@@ -26,6 +25,7 @@ struct AVL_NODE {
     // node hash
     MyString hash;
     AVL_NODE(): left_child(""), right_child(""), height(0), hash("") {}
+
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
         file_stream << node.key << endl;
         file_stream << node.data.get_size() << endl;
@@ -40,12 +40,13 @@ struct AVL_NODE {
     }
 };
 
-
 template<typename T>
 filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) {
 
-    fstream file(root_path, ios::in);
+    static fstream file;
+    file.open(root_path, ios::in);
 
+    // if inserting for the first time
     if (root_path == "") {
         cout << "File not found\n inferring that first node of tree...\n";
         // create file.
@@ -55,13 +56,21 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
         file.close();
         return node_path;
     }
+    // if unable to open the file
     else if (!file.is_open()) {
         cout << "Error opening file\n";
         return root_path;
     }
+    // close that it would be open in other
+    file.close();
+    // now move to left or right
+
+
     return root_path;
 }
 
+/*
+ *normal code for avl insertion
 template<typename U>
 auto insert_avl(TreeNode<U> * root, U data) {
     if (!root) {
@@ -76,7 +85,7 @@ auto insert_avl(TreeNode<U> * root, U data) {
     root->height = tree_height(root);
     return root;
 }
-
+*/
 
 
 #endif //AVL_H

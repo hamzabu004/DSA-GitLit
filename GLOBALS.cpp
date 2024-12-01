@@ -2,10 +2,7 @@
 // Created by ht on 11/30/24.
 //
 
-
-
 #include "GLOBALS.h"
-
 
 void init_(){
     blood_group_str[0] = "A-";

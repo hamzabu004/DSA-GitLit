@@ -60,9 +60,6 @@ void GitLite::welcome() {
     cout << "Columns: " << structure_info.csv_meta.col_names << endl;
     // read and print specific columns
 
-
-
-
 }
 
 void GitLite::run() {

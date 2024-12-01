@@ -2,13 +2,11 @@
 // Created by ht on 11/30/24.
 //
 
-
 #include <gtest/gtest.h>
 #include <filesystem>
 #include "../Advance_Structures/CSV.h"
 #include "../GLOBALS.h"
 #include "../Advance_Structures/AVL.h"
-
 
 TEST(AVL, INSERTROOTNODE) {
     csv_row rows[1];
@@ -32,7 +30,6 @@ TEST(AVL, INSERTROOTNODE) {
     new_node.data.insert(rows[0]);
     new_node.key = rows[0].name;
     new_node.hash = "hash";
-
 
     avl_tree = insert_avl_node(new_node, avl_tree);
     cout << avl_tree << endl;

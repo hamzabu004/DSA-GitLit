@@ -21,6 +21,7 @@ add_executable(
         ../STL_STRUCTURES/MyString.h
         ../Advance_Structures/AVL.h
         ../Advance_Structures/CSV.h
+        ../Utils/file_operations.h
 )
 target_link_libraries(
         Gtest_Proj
