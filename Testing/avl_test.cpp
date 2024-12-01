@@ -35,6 +35,16 @@ TEST(AVL, INSERTROOTNODE) {
     cout << avl_tree << endl;
 }
 
+TEST(AVL, ReadNode) {
+    AVL_NODE<MyString> node;
+    std::filesystem::path avl_tree = "John Doe";
+    fstream file(avl_tree, ios::in);
+    file >> node;
+
+    cout << node.key << endl;
+    // cout << node.data
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

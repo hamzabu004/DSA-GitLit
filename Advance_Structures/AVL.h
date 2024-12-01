@@ -32,10 +32,45 @@ struct AVL_NODE {
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
         }
-        file_stream << node.left_child << endl;
-        file_stream << node.right_child << endl;
+        if (node.left_child == "") {
+            file_stream << "NULL" << endl;
+        } else {
+            file_stream << node.left_child << endl;
+        }
+        if (node.right_child == "") {
+            file_stream << "NULL" << endl;
+        } else {
+            file_stream << node.right_child << endl;
+        }
         file_stream << node.height << endl;
         file_stream << node.hash << endl;
+        return file_stream;
+    }
+
+    friend fstream& operator>>(fstream &file_stream, AVL_NODE &node) {
+        file_stream >> node.key;
+        int size;
+        file_stream >> size;
+        for (int i = 0; i < size; i++) {
+            csv_row row;
+            file_stream >> row;
+            node.data.insert(row);
+        }
+        string left, right;
+        file_stream >> left;
+        if (left == "NULL") {
+            node.left_child = "";
+        } else {
+            node.left_child = left;
+        }
+        file_stream >> right;
+        if (right == "NULL") {
+            node.right_child = "";
+        } else {
+            node.right_child = right;
+        }
+        file_stream >> node.height;
+        file_stream >> node.hash;
         return file_stream;
     }
 };

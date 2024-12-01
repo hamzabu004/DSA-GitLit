@@ -46,6 +46,25 @@ struct csv_row {
          file_stream << row.test_result << endl;
          return file_stream;
      }
+    friend fstream& operator>>(fstream &file_stream, csv_row &row)
+     {
+         file_stream >> row.name;
+         file_stream >> row.age;
+         file_stream >> row.gender;
+         file_stream >> row.blood_group;
+         file_stream >> row.medical_condition;
+         file_stream >> row.date;
+         file_stream >> row.doctor;
+         file_stream >> row.hospital;
+         file_stream >> row.insurance_provider;
+         file_stream >> row.billing_sum;
+         file_stream >> row.room_no;
+         file_stream >> row.admission_type;
+         file_stream >> row.discharge_date;
+         file_stream >> row.medication;
+         file_stream >> row.test_result;
+         return file_stream;
+     }
 };
 
 

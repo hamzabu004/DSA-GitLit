@@ -101,9 +101,19 @@ public:
         return os;
     }
 
+
+
     friend std::filesystem::path operator/(const std::filesystem::path& p, const MyString& s) {
         return p / s.str;
     }
+
+    friend std::istream& operator>>(std::istream& is, MyString& s) {
+        char temp[200];
+        is.getline(temp, 200);
+        s = temp;
+        return is;
+    }
+
 
 };
 
