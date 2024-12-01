@@ -8,6 +8,9 @@
 #include <fstream>
 #include <string>
 
+using std::fstream;
+using namespace std::filesystem;
+
 using std::ios;
 using std::string;
 using std::getline;
@@ -36,7 +39,25 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
     }
     return columns;
 }
-
 // read specified entries for specific columns
+
+//open file funciton
+bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
+{
+    if(mode == ios::in){
+          file.open(csv_path, ios::in);
+    }
+    else{
+        file.open(csv_path, ios::out);
+    }
+    if (!file.is_open()) {
+        cout<<"File not found"<<endl;
+        return false;
+    }
+    return true;
+}
+
+
+
 
 #endif //FILE_OPERATIONS_H
