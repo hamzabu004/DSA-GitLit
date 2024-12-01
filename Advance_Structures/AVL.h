@@ -93,9 +93,24 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     file.close();
     // now move to left or right
 /*
+ * open root file for reading
+ * root_key_data = read_key(root_path)
+ * left_child_path = read_left_path(root_path)
+ * right_child_path = read_right_path(root_path)
+ * close file
  *
- *
- *
+ * open_file (file, left_path, reading_mode)
+ * left_key_data = read_key(left_path)
+ * if(root_key_data > left_key_data)
+ *      move to in the left sub-tree
+ *       close file
+ *       root_path = left_key_path
+ *       return insert_avl_node(node, root_path)
+ * else
+ *      move to right sub-tree
+ *       close file
+ *       root_path = left_key_path
+ *       return insert_avl_node(node, root_path)
  */
     return root_path;
 }
