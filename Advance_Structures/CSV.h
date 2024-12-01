@@ -74,6 +74,26 @@ struct csv_row {
          move_pointer_ahead(file_stream);
          return file_stream;
      }
+    friend std::ostream& operator<<(std::ostream &os, const csv_row &row) {
+         os << "Name: " << row.name << std::endl;
+         os << "Age: " << row.age << std::endl;
+         os << "Gender: " << row.gender << std::endl;
+         os << "Blood Group: " << row.blood_group << std::endl;
+         os << "Medical Condition: " << row.medical_condition << std::endl;
+         os << "Date: " << row.date << std::endl;
+         os << "Doctor: " << row.doctor << std::endl;
+         os << "Hospital: " << row.hospital << std::endl;
+         os << "Insurance Provider: " << row.insurance_provider << std::endl;
+         os << "Billing Sum: " << row.billing_sum << std::endl;
+         os << "Room No: " << row.room_no << std::endl;
+         os << "Admission Type: " << row.admission_type << std::endl;
+         os << "Discharge Date: " << row.discharge_date << std::endl;
+         os << "Medication: " << row.medication << std::endl;
+         os << "Test Result: " << row.test_result << std::endl;
+         os << "-------------------------------------------------------" << std::endl;
+         return os;
+     }
+
 };
 
 
