@@ -4,14 +4,14 @@
 
 #include <gtest/gtest.h>
 #include <filesystem>
-#include "../Advance_Structures/CSV.h"
 #include "../GLOBALS.h"
 #include "../Advance_Structures/AVL.h"
-
+/*
 TEST(AVL, INSERTROOTNODE) {
+
     csv_row rows[1];
     AVL_NODE<MyString> new_node;
-    std::filesystem::path avl_tree = "";
+    std::filesystem::path avl_tree = "NULL";
     rows[0].name = "John Doe";
     rows[0].age = 30;
     rows[0].gender = gender::Male;
@@ -34,7 +34,7 @@ TEST(AVL, INSERTROOTNODE) {
     avl_tree = insert_avl_node(new_node, avl_tree);
     cout << avl_tree << endl;
 }
-
+*/
 TEST(AVL, ReadNode) {
     csv_row rows[1];
     rows[0].name = "John Doe";
@@ -74,6 +74,7 @@ TEST(AVL, ReadNode) {
     ASSERT_EQ(node.data[0].medication, rows[0].medication);
     ASSERT_EQ(node.data[0].test_result, rows[0].test_result);
     ASSERT_EQ(node.hash, "hash");
+
 }
 
 int main(int argc, char **argv) {

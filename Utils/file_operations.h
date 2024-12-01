@@ -4,6 +4,11 @@
 
 #ifndef FILE_OPERATIONS_H
 #define FILE_OPERATIONS_H
+
+#include "../STL_STRUCTURES/MyList.h"
+#include "../STL_STRUCTURES/MyString.h"
+#include "../Advance_Structures/AVL.h"
+
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -14,8 +19,7 @@ using namespace std::filesystem;
 using std::ios;
 using std::string;
 using std::getline;
-#include "../STL_STRUCTURES/MyList.h"
-#include "../STL_STRUCTURES/MyString.h"
+
 
 inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
     std::ifstream file(csv_path, ios::in);
@@ -60,6 +64,9 @@ inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode =
 inline void move_pointer_ahead(fstream& file, int n = 1) {
     file.seekp(n, ios::cur);
 }
+
+
+
 
 
 
