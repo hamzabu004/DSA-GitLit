@@ -39,12 +39,12 @@ struct AVL_NODE {
         if (node.left_child == "NULL" || node.left_child == "") {
             file_stream << "NULL" << endl;
         } else {
-            file_stream << node.left_child.string() << endl;
+            file_stream << node.left_child << endl;
         }
         if (node.right_child == "" || node.right_child == "NULL") {
             file_stream << "NULL" << endl;
         } else {
-            file_stream << node.right_child.string() << endl;
+            file_stream << node.right_child << endl;
         }
         file_stream << node.height << endl;
         file_stream << node.hash << endl;
@@ -151,16 +151,17 @@ path right_rotate(path root) {
     write_avl_node(root, curr_node);
 
 
+    // update the actual root which was rotated
+    read_avl_node(root, curr_node);
+    curr_node.height = tree_height<T>(root);
+    write_avl_node<T>(root, curr_node);
 
     // update height of node which became root
     read_avl_node(root_left_child, curr_node);
     curr_node.height = tree_height<T>(root_left_child);
     write_avl_node<T>(root_left_child, curr_node);
 
-    // update the actual root which was rotated
-    read_avl_node(root, curr_node);
-    curr_node.height = tree_height<T>(root);
-    write_avl_node<T>(root, curr_node);
+
 
 
     return root_left_child;
@@ -185,16 +186,18 @@ path left_rotate(path root) {
     curr_node.right_child = root_right_left_child.c_str();
     write_avl_node<T>(root, curr_node);
 
+    // order matters
+
+    // previous root which was rotated
+    read_avl_node(root, curr_node);
+    curr_node.height = tree_height<T>(root);
+    write_avl_node<T>(root, curr_node);
 
     // update height of node which became root
     read_avl_node(root_right_child, curr_node);
     curr_node.height = tree_height<T>(root_right_child);
     write_avl_node<T>(root_right_child, curr_node);
 
-    // previous root which was rotated
-    read_avl_node(root, curr_node);
-    curr_node.height = tree_height<T>(root);
-    write_avl_node<T>(root, curr_node);
     
     return root_right_child;
 
