@@ -178,7 +178,7 @@ void map_str_row_to_csv_row(char str_row[], csv_row &row) {
 }
 
 TEST(CSV, READEVERYROW) {
-    path csv_path = "/media/ht/01DB003D88B96CA0/Sem3/Data/Project/dataset20.csv";
+    path csv_path = "/media/ht/01DB003D88B96CA0/Sem3/Data/Project/healthcare_dataset.csv";
     fstream file(csv_path, ios::in);
 
     // ignore columns
@@ -191,14 +191,18 @@ TEST(CSV, READEVERYROW) {
         csv_row row;
         file.getline(temp, 10000);
         map_str_row_to_csv_row(temp, row);
-        cout << row << endl;
+        // cout << row << endl;
         new_node.data.insert(row);
         new_node.key = row.name;
         new_node.hash = "HASH";
         avl_tree = insert_avl_node(new_node, avl_tree);
     }
-    cout << "end of teh world";
+    cout << endl << avl_tree << endl << "end of teh world";
 }
+
+// TEST(AVL, inorder) {
+//     print_avl_tree<MyString>("danny smith");
+// }
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

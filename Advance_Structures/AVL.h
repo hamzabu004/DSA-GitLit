@@ -211,7 +211,7 @@ filesystem::path balance_avl(filesystem::path root) {
         read_avl_node<T>(root, curr_node);
         switch (balance_factor) {
             case 2: {
-                cout << "Left shift" << endl;
+                // cout << "Left shift" << endl;
                 path right_child = curr_node.right_child;
                 if (get_balance_factor<T>(right_child) == -1) {
                     right_child = right_rotate<T>(right_child);
@@ -228,7 +228,7 @@ filesystem::path balance_avl(filesystem::path root) {
                     curr_node.left_child = left_child.c_str();
                     write_avl_node<T>(root, curr_node);
                 }
-                cout << "Right Shift" << endl;
+                // cout << "Right Shift" << endl;
                 root = right_rotate<T>(root).c_str();
                 break;
             }
@@ -238,38 +238,6 @@ filesystem::path balance_avl(filesystem::path root) {
     }
     return root;
 }
-/*
- *template<typename U>
-auto balance_tree(TreeNode<U>* root) {
-    short balance_factor = get_balance_factor(root);
-    if (abs(balance_factor) > 1 ) {
-
-        switch (balance_factor) {
-            case 2: {
-                cout << "Left shift" << endl;
-                if (get_balance_factor(root->right) == -1) {
-                    root->right = right_rotate(root->right);
-                }
-                root = left_rotate(root);
-                break;
-            }
-            case -2:{
-                if (get_balance_factor(root->left) == 1) {
-                    root->left = left_rotate(root->left);
-                }
-                cout << "Right Shift" << endl;
-                root = right_rotate(root);
-                break;
-            }
-            default: ;
-        }
-
-    }
-    return root;
-}
- * 
- */
-
 
 template<typename T>
 filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) {
@@ -279,7 +247,7 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
 
     // if inserting for the first time
     if (root_path == "NULL") {
-        cout << "File not found\n inferring that first node of tree...\n";
+        // cout << "File not found\n inferring that first node of tree...\n";
         // create file.
         root_path = "";
         filesystem::path node_path = root_path / node.key;
@@ -290,7 +258,7 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     }
     // if unable to open the file
     else if (!file.is_open()) {
-        cout << "Error opening file\n";
+        // cout << "Error opening file\n";
         return root_path;
     }
     // close that it would be open in other
@@ -326,21 +294,15 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
     return root_path;
 }
 
-/*
- *normal code for avl insertion
-template<typename U>
-auto insert_avl(TreeNode<U> * root, U data) {
-    if (!root) {
-        return new TreeNode<U>(data);
-    }
-    if(root->id > data) {
-        root->left = insert_avl(root->left, data);
-    } else if (root->id < data) {
-        root->right = insert_avl(root->right, data);
-    }
-    root = balance_tree(root);
-    root->height = tree_height(root);
-    return root;
+
+template<typename T>
+void print_avl_tree(path root) {
+    if (root == "NULL") return;
+    AVL_NODE<T> curr_node;
+    read_avl_node<T>(root, curr_node);
+    print_avl_tree<T>(curr_node.left_child);
+    cout << curr_node.key << endl;
+    print_avl_tree<T>(curr_node.right_child);
 }
-*/
+
 #endif //AVL_H
