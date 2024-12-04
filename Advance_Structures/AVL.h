@@ -18,6 +18,8 @@
 using namespace std;
 using namespace std::filesystem;
 
+inline path parents_folder = "master/tree";
+
 template<typename T>
 struct AVL_NODE {
 
@@ -36,13 +38,13 @@ struct AVL_NODE {
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
         }
-        if (node.left_child == "NULL" || node.left_child == "") {
-            file_stream << "NULL" << endl;
+        if (node.left_child == parents_folder || node.left_child == "NULL") {
+            file_stream << parents_folder << endl;
         } else {
             file_stream << node.left_child << endl;
         }
-        if (node.right_child == "" || node.right_child == "NULL") {
-            file_stream << "NULL" << endl;
+        if (node.right_child == parents_folder || node.right_child == "NULL") {
+            file_stream << parents_folder << endl;
         } else {
             file_stream << node.right_child << endl;
         }
@@ -71,6 +73,9 @@ struct AVL_NODE {
     }
 };
 
+
+
+
 template<typename T>
 void write_avl_node(path node_path, AVL_NODE<T> &node) {
     fstream file;
@@ -92,7 +97,7 @@ void read_avl_node(path node_path, AVL_NODE<T> &node) {
 
 template <typename T>
 inline int tree_height(filesystem::path root) {
-    if (root == "NULL") return -1;
+    if (root == parents_folder) return -1;
 
     int right = -1;
     int left  = -1;
@@ -105,11 +110,11 @@ inline int tree_height(filesystem::path root) {
     path left_child = curr_node.left_child;
 
 
-    if (left_child != "NULL") {
+    if (left_child != parents_folder) {
         read_avl_node<T>(left_child, curr_node);
         left = curr_node.height;
     }
-    if (right_child != "NULL") {
+    if (right_child != parents_folder) {
         read_avl_node<T>(right_child, curr_node);
         right = curr_node.height;
     }
@@ -117,6 +122,27 @@ inline int tree_height(filesystem::path root) {
     return max(left, right ) + 1;
 }
 
+template <typename T>
+inline int tree_height(AVL_NODE<T>& node) {
+    int right = -1;
+    int left  = -1;
+
+    path right_child = node.right_child;
+    path left_child = node.left_child;
+
+    if (left_child != parents_folder) {
+        AVL_NODE<T> curr_node;
+        read_avl_node<T>(left_child, curr_node);
+        left = curr_node.height;
+    }
+    if (right_child != parents_folder) {
+        AVL_NODE<T> curr_node;
+        read_avl_node<T>(right_child, curr_node);
+        right = curr_node.height;
+    }
+
+    return max(left, right ) + 1;
+}
 
 template <typename T>
 short get_balance_factor(path root) {
@@ -243,21 +269,20 @@ template<typename T>
 filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) {
 
     static fstream file;
+    if (root_path == parents_folder) {
+        // cout << "File not found\n inferring that first node of tree...\n";
+        // create file.
+        filesystem::path node_path = parents_folder / node.key;
+
+        return node_path;
+    }
+
     file.open(root_path, ios::in);
 
     // if inserting for the first time
-    if (root_path == "NULL") {
-        // cout << "File not found\n inferring that first node of tree...\n";
-        // create file.
-        root_path = "";
-        filesystem::path node_path = root_path / node.key;
-        file.open(node_path, ios::out);
-        file << node;
-        file.close();
-        return node_path;
-    }
+
     // if unable to open the file
-    else if (!file.is_open()) {
+    if (!file.is_open()) {
         // cout << "Error opening file\n";
         return root_path;
     }
@@ -297,7 +322,7 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
 
 template<typename T>
 void print_avl_tree(path root) {
-    if (root == "NULL") return;
+    if (root == parents_folder) return;
     AVL_NODE<T> curr_node;
     read_avl_node<T>(root, curr_node);
     print_avl_tree<T>(curr_node.left_child);
