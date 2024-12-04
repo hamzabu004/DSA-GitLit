@@ -49,10 +49,10 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
 inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
 {
     if(mode == ios::in){
-          file.open(csv_path, ios::in);
+          file.open(csv_path, ios::in | ios::binary);
     }
     else{
-        file.open(csv_path, ios::out);
+        file.open(csv_path, ios::out | ios::binary);
     }
     if (!file.is_open()) {
         cout<<"File not found"<<endl;
