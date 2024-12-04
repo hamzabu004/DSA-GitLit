@@ -4,6 +4,11 @@
 
 #ifndef FILE_OPERATIONS_H
 #define FILE_OPERATIONS_H
+
+#include "../STL_STRUCTURES/MyList.h"
+#include "../STL_STRUCTURES/MyString.h"
+#include "../Advance_Structures/AVL.h"
+
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -14,8 +19,7 @@ using namespace std::filesystem;
 using std::ios;
 using std::string;
 using std::getline;
-#include "../STL_STRUCTURES/MyList.h"
-#include "../STL_STRUCTURES/MyString.h"
+
 
 inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
     std::ifstream file(csv_path, ios::in);
@@ -42,13 +46,13 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
 // read specified entries for specific columns
 
 //open file funciton
-bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
+inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::in)
 {
     if(mode == ios::in){
-          file.open(csv_path, ios::in);
+          file.open(csv_path, ios::in | ios::binary);
     }
     else{
-        file.open(csv_path, ios::out);
+        file.open(csv_path, ios::out | ios::binary);
     }
     if (!file.is_open()) {
         cout<<"File not found"<<endl;
@@ -56,6 +60,15 @@ bool open_file (fstream& file, std::filesystem::path csv_path, int mode = ios::i
     }
     return true;
 }
+
+inline void move_pointer_ahead(fstream& file, int n = 1) {
+    file.seekp(n, ios::cur);
+}
+
+
+
+
+
 
 
 
