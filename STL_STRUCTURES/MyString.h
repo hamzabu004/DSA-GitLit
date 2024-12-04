@@ -100,6 +100,11 @@ public:
         os << s.str;
         return os;
     }
+
+    friend std::filesystem::path operator/(const std::filesystem::path& p, const MyString& s) {
+        return p / s.str;
+    }
+
 };
 
 
