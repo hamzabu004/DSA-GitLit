@@ -123,6 +123,14 @@ inline int tree_height(filesystem::path root) {
 }
 
 template <typename T>
+inline int node_height(path root) {
+    if (root == parents_folder) return -1;
+    AVL_NODE<T> curr_node;
+    read_avl_node<MyString>(root, curr_node);
+    return curr_node.height;
+}
+
+template <typename T>
 inline int tree_height(AVL_NODE<T>& node) {
     int right = -1;
     int left  = -1;
@@ -159,6 +167,7 @@ path right_rotate(path root) {
     // root's left becomes new_root
     // root's left's right becomes root's left
     AVL_NODE<T> curr_node;
+    AVL_NODE<T> left_ram;
     read_avl_node<T>(root, curr_node);
     // this will act as root
 
@@ -166,29 +175,16 @@ path right_rotate(path root) {
     path root_left_child = curr_node.left_child;
 
     // temp->right = root;
-    read_avl_node<T>(root_left_child, curr_node);
-    path root_left_right_child = curr_node.right_child;
-    curr_node.right_child = root.c_str();
-    write_avl_node<T>(root_left_child, curr_node);
+    read_avl_node<T>(root_left_child, left_ram);
 
-    // root->left = temp->right;
-    read_avl_node<T>(root, curr_node);
-    curr_node.left_child = root_left_right_child.c_str();
-    write_avl_node(root, curr_node);
-
-
-    // update the actual root which was rotated
-    read_avl_node(root, curr_node);
-    curr_node.height = tree_height<T>(root);
+    path root_left_right_child = left_ram.right_child;
+    curr_node.left_child = root_left_right_child;
+    curr_node.height = max(node_height<T>(root_left_right_child) + 1, curr_node.height);
     write_avl_node<T>(root, curr_node);
 
-    // update height of node which became root
-    read_avl_node(root_left_child, curr_node);
-    curr_node.height = tree_height<T>(root_left_child);
-    write_avl_node<T>(root_left_child, curr_node);
-
-
-
+    left_ram.right_child = root;
+    left_ram.height = max(node_height<T>(root) + 1, left_ram.height);
+    write_avl_node<T>(root_left_child, left_ram);
 
     return root_left_child;
 }
@@ -196,35 +192,24 @@ path right_rotate(path root) {
 template<typename T>
 path left_rotate(path root) {
     AVL_NODE<T> curr_node;
+    AVL_NODE<T> right_ram;
     read_avl_node<T>(root, curr_node);
 
     // auto* temp = root->right;
     path root_right_child = curr_node.right_child;
 
     // temp->left = root;
-    read_avl_node<T>(root_right_child, curr_node);
-    path root_right_left_child = curr_node.left_child;
-    curr_node.left_child = root.c_str();
-    write_avl_node<T>(root_right_child, curr_node);
+    read_avl_node<T>(root_right_child, right_ram);
 
-    // root->right = temp->left;
-    read_avl_node<T>(root, curr_node);
-    curr_node.right_child = root_right_left_child.c_str();
+    path root_right_left_child = right_ram.left_child;
+    curr_node.right_child = root_right_left_child;
+    curr_node.height = max(node_height<T>(root_right_left_child) + 1, curr_node.height);
     write_avl_node<T>(root, curr_node);
 
-    // order matters
+    right_ram.left_child = root;
+    right_ram.height = max(node_height<T>(root) + 1, right_ram.height);
+    write_avl_node<T>(root_right_child, right_ram);
 
-    // previous root which was rotated
-    read_avl_node(root, curr_node);
-    curr_node.height = tree_height<T>(root);
-    write_avl_node<T>(root, curr_node);
-
-    // update height of node which became root
-    read_avl_node(root_right_child, curr_node);
-    curr_node.height = tree_height<T>(root_right_child);
-    write_avl_node<T>(root_right_child, curr_node);
-
-    
     return root_right_child;
 
 }
@@ -273,48 +258,64 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
         // cout << "File not found\n inferring that first node of tree...\n";
         // create file.
         filesystem::path node_path = parents_folder / node.key;
-
+        write_avl_node<T>(node_path, node);
         return node_path;
     }
 
-    file.open(root_path, ios::in);
 
-    // if inserting for the first time
 
-    // if unable to open the file
-    if (!file.is_open()) {
-        // cout << "Error opening file\n";
-        return root_path;
-    }
-    // close that it would be open in other
     AVL_NODE<T> curr_node;
-    file >> curr_node;
-    file.close();
-
-    path left_child_path = curr_node.left_child;
-    path right_child_path = curr_node.right_child;
+    read_avl_node<T>(root_path, curr_node);
     // read left and right child
 
     if (curr_node.key > node.key) {
        // move to left
-        left_child_path = insert_avl_node(node, left_child_path);
-        // update the left child path
-        curr_node.left_child = left_child_path;
-        // open the file in write mode
-        write_avl_node<T>(root_path, curr_node);
+       // update the left child path
+        curr_node.left_child = insert_avl_node(node, curr_node.left_child );
+
     } else if (curr_node.key < node.key) {
         // move to right
-        right_child_path = insert_avl_node(node, right_child_path);
         // update the right child path
-        curr_node.right_child = right_child_path;
-        // open the file in write mode
-        write_avl_node<T>(root_path, curr_node);
+        curr_node.right_child = insert_avl_node(node, curr_node.right_child);
     }
-
-    root_path = balance_avl<T>(root_path);
-    read_avl_node(root_path, curr_node);
-    curr_node.height = tree_height<T>(root_path);
+    else {
+        cout << "DUp";
+        return root_path;
+    }
+    curr_node.height = max(node_height<T>(curr_node.left_child), node_height<T>(curr_node.right_child)) + 1;
     write_avl_node<T>(root_path, curr_node);
+
+    short balance_factor = get_balance_factor<T>(root_path);
+    if (abs(balance_factor) > 1 ) {
+        AVL_NODE<T> curr_node;
+        read_avl_node<T>(root_path, curr_node);
+        switch (balance_factor) {
+            case 2: {
+                // cout << "Left shift" << endl;
+                path right_child = curr_node.right_child;
+                if (get_balance_factor<T>(right_child) == -1) {
+                    right_child = right_rotate<T>(right_child);
+                    curr_node.right_child = right_child.c_str();
+                    write_avl_node<T>(root_path, curr_node);
+                }
+                root_path = left_rotate<T>(root_path);
+                break;
+            }
+            case -2:{
+                path left_child = curr_node.left_child;
+                if (get_balance_factor<T>(left_child) == 1) {
+                    left_child = left_rotate<T>(left_child);
+                    curr_node.left_child = left_child;
+                    write_avl_node<T>(root_path, curr_node);
+                }
+                // cout << "Right Shift" << endl;
+                root_path = right_rotate<T>(root_path);
+                break;
+            }
+            default: ;
+        }
+
+    }
 
     return root_path;
 }
@@ -329,5 +330,103 @@ void print_avl_tree(path root) {
     cout << curr_node.key << endl;
     print_avl_tree<T>(curr_node.right_child);
 }
+
+void map_str_row_to_csv_row(char str_row[], csv_row &row) {
+
+    int i = 0;
+    while (str_row[i] != ',') {
+        row.name.insert_char(str_row[i]);
+        i++;
+    }
+    row.name.to_lower();
+    i++;
+    while (str_row[i] != ',') {
+        row.age = row.age * 10 + (str_row[i] - '0');
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.gender.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.blood_group.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.medical_condition.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.date.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.doctor.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.hospital.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.insurance_provider.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    bool decimal = false;
+    int mul = 10;
+    while (str_row[i] != ',') {
+        // billing sum is float
+
+        if (str_row[i] == '.') {
+            decimal = true;
+            i++;
+            continue;
+        }
+        if (decimal) {
+            int temp = str_row[i] - '0';
+            double temp2 = double(temp) / mul;
+            row.billing_sum = row.billing_sum + temp2;
+            mul *= 10;
+        }
+        else {
+            row.billing_sum = row.billing_sum * 10 + (str_row[i] - '0');
+        }
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.room_no = row.room_no * 10 + (str_row[i] - '0');
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.admission_type.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.discharge_date.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != ',') {
+        row.medication.insert_char(str_row[i]);
+        i++;
+    }
+    i++;
+    while (str_row[i] != '\0') {
+        row.test_result.insert_char(str_row[i]);
+        i++;
+    }
+}
+
 
 #endif //AVL_H
