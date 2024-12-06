@@ -262,8 +262,6 @@ filesystem::path insert_avl_node(AVL_NODE<T> &node, filesystem::path root_path) 
         return node_path;
     }
 
-
-
     AVL_NODE<T> curr_node;
     read_avl_node<T>(root_path, curr_node);
     // read left and right child
