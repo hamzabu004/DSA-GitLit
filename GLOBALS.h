@@ -55,6 +55,12 @@ enum test_results {
     Inconclusive
 };
 
+enum datatypes {
+    STRING,
+    INT,
+    FLOAT,
+};
+
 inline MyString test_result_str[3];
 
 void init_();

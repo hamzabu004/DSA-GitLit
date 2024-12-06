@@ -92,5 +92,101 @@ struct csv_row {
 
 };
 
+inline void map_str_row_to_csv_row(char str_row[], csv_row &row) {
+
+        int i = 0;
+        while (str_row[i] != ',') {
+            row.name.insert_char(str_row[i]);
+            i++;
+        }
+        row.name.to_lower();
+        i++;
+        while (str_row[i] != ',') {
+            row.age = row.age * 10 + (str_row[i] - '0');
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.gender.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.blood_group.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.medical_condition.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.date.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.doctor.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.hospital.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.insurance_provider.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        bool decimal = false;
+        int mul = 10;
+        while (str_row[i] != ',') {
+            // billing sum is float
+
+            if (str_row[i] == '.') {
+                decimal = true;
+                i++;
+                continue;
+            }
+            if (decimal) {
+                int temp = str_row[i] - '0';
+                double temp2 = double(temp) / mul;
+                row.billing_sum = row.billing_sum + temp2;
+                mul *= 10;
+            }
+            else {
+                row.billing_sum = row.billing_sum * 10 + (str_row[i] - '0');
+            }
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.room_no = row.room_no * 10 + (str_row[i] - '0');
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.admission_type.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.discharge_date.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != ',') {
+            row.medication.insert_char(str_row[i]);
+            i++;
+        }
+        i++;
+        while (str_row[i] != '\0') {
+            row.test_result.insert_char(str_row[i]);
+            i++;
+        }
+    }
 
 #endif //CSV_H
