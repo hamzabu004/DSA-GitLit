@@ -6,6 +6,7 @@
 #define MYSTRING_H
 #include <ostream>
 #include <cstring>
+#include <filesystem>
 
 using std::strlen;
 
@@ -60,6 +61,13 @@ public:
             }
         }
     }
+    char* c_str() const {
+        return str;
+    }
+    int size() const {
+        return len;
+    }
+
     MyString& operator=(const MyString& s) {
         if (this == &s) return *this;
         delete[] str;
@@ -103,7 +111,7 @@ public:
 
 
 
-    friend std::filesystem::path operator/(const std::filesystem::path& p, const MyString& s) {
+    friend std::filesystem::__cxx11::path operator/(const std::filesystem::path &p, const MyString& s) {
         return p / s.str;
     }
 
