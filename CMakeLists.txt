@@ -9,7 +9,6 @@ add_executable(DSA_GitLit main.cpp
         GLOBALS.h
         Utils/file_operations.h
         STL_STRUCTURES/MyList.h
-#        Advance_Structures/AVL.cpp
         Advance_Structures/AVL.h
         Advance_Structures/CSV.h
 )
