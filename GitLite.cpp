@@ -22,7 +22,11 @@ void GitLite::welcome() {
     cin >> git_info.repo_name;
 
     MyList<MyString> columns = get_columns(csv_path);
-    cout << "Columns: " << columns << endl;
+    cout << "Columns: " << endl;
+
+    for (int i = 0; i < columns.get_size(); i++) {
+        cout << i << ". " << columns[i] << endl;
+    }
 
     cout << "Select Column(0-indexed): ";
     cin >> structure_info.selected_col;
@@ -33,7 +37,7 @@ void GitLite::welcome() {
         cout << "Enter Btree order: ";
         cin >> structure_info.btree_order;
     }
-    else if (structure_info.btree_order != tree_type::AVL && structure_info.btree_order != tree_type::RBT) {
+    else if (structure_info.tree_type != tree_type::AVL && structure_info.tree_type != tree_type::RBT) {
         cout << "Invalid tree type. Selecting default_tree\n";
         structure_info.btree_order = tree_type::AVL;
     }
@@ -44,7 +48,7 @@ void GitLite::welcome() {
         cout << "Invalid hash type. Selecting default_hash\n";
         structure_info.hash = hash_type::SHA256;
     }
-    // git_init();
+    git_init();
     // main_menu();
 
 
@@ -54,6 +58,10 @@ void GitLite::main_menu() {
     while (true) {
         system("clear");
         cout << title_str << endl;
+        cout << "###Main Menu###\n";
+        cout << "Current Branch: " << git_info.branches[git_info.current_branch]
+            // << "is uncommit changes\n" << is_stage_empty() ? "No" : "Yes"
+        << endl;
         cout << "1. Git Menu\n";
         cout << "2. Tree Menu\n";
         cout << "3. Exit\n";
@@ -105,4 +113,13 @@ void GitLite::git_init() {
 
 void GitLite::run() {
     welcome();
+}
+
+void GitLite::fill_initial_csv() {
+    structure_info.tree_type = tree_type::AVL;
+    structure_info.hash = hash_type::SHA256;
+    structure_info.btree_order = 0;
+    git_info.repo_name = "test_repo";
+    structure_info.selected_col = 0;
+    csv_path = "data.csv";
 }

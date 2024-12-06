@@ -35,6 +35,8 @@ class GitLite {
         int btree_order;
         int csv_meta;
     } structure_info;
+
+    // commit structure
     path csv_path;
 	MyString title_str = "   ________.__  __  .____    .__  __          \n  /  _____/|__|/  |_|    |   |__|/  |_  ____ \n /   \\  ___|  \\   __\\    |   |  \\   __\\/ __ \\ \n \\    \\_\\  \\  ||  | |    |___|  ||  | \\  ___/ \n  \\______  /__||__| |_______ \\__||__|  \\___  > \n         \\/                 \\/             \\/";
 
@@ -50,6 +52,9 @@ public:
     void git_checkout();
     void git_reset();
     void run();
+
+    // testing
+    void fill_initial_csv();
 };
 
 #endif //GITLITE_H
