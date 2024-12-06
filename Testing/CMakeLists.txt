@@ -20,7 +20,6 @@ add_executable(
         avl_test.cpp
         ../STL_STRUCTURES/MyString.h
         ../Advance_Structures/AVL.h
-        ../Advance_Structures/CSV.h
         ../Utils/file_operations.h
 )
 target_link_libraries(

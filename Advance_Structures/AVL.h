@@ -9,10 +9,9 @@
 #include <filesystem>
 #include <fstream>
 
-#include "CSV.h"
 
 #include "../STL_STRUCTURES/MyList.h"
-
+#include "../Utils/file_operations.h"
 
 
 using namespace std;
@@ -22,13 +21,11 @@ template<typename T>
 struct AVL_NODE {
 
     T key;
-    MyList<csv_row> data;
+    MyList<MyString> data;
     path left_child;
     path right_child;
     int height;
-    // node hash
-    MyString hash;
-    AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0), hash("") {}
+    AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
         file_stream << node.key << endl;
@@ -41,7 +38,6 @@ struct AVL_NODE {
         file_stream << node.right_child << endl;
 
         file_stream << node.height << endl;
-        file_stream << node.hash << endl;
         return file_stream;
     }
 
@@ -51,7 +47,7 @@ struct AVL_NODE {
         file_stream >> size;
         move_pointer_ahead(file_stream);
         for (int i = 0; i < size; i++) {
-            csv_row row;
+            MyString row;
             file_stream >> row;
             node.data.insert(row);
         }
@@ -60,7 +56,6 @@ struct AVL_NODE {
         file_stream >> node.right_child;
         file_stream >> node.height;
         move_pointer_ahead(file_stream);
-        file_stream >> node.hash;
         return file_stream;
     }
 };
@@ -264,7 +259,9 @@ public:
             curr_node.right_child = insert_avl_node(node, curr_node.right_child);
         }
         else {
-            cout << "DUp";
+            // key already exists
+            curr_node.data.insert(node.data[0]);
+            write_avl_node(root_path, curr_node);
             return root_path;
         }
         curr_node.height = max(node_height(curr_node.left_child), node_height(curr_node.right_child)) + 1;

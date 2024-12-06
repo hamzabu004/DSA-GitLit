@@ -6,6 +6,7 @@
 #define MYSTRING_H
 #include <ostream>
 #include <cstring>
+#include <filesystem>
 
 using std::strlen;
 
