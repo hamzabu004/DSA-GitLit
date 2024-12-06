@@ -32,7 +32,7 @@ class GitLite {
         int selected_col;
         int tree_type;
         int btree_order;
-        MyString hash;
+        int hash;
     } structure_info;
 
     // commit structure

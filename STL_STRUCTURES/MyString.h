@@ -4,11 +4,14 @@
 
 #ifndef MYSTRING_H
 #define MYSTRING_H
+#include <iostream>
 #include <ostream>
 #include <cstring>
 #include <filesystem>
 
 using std::strlen;
+using std::strcpy;
+using std::endl;
 
 class MyString {
     char* str;
