@@ -109,7 +109,7 @@ public:
         delete[] str;
     }
     friend std::ostream& operator<<(std::ostream& os, const MyString& s) {
-        os << s.str;
+        os << s.str << endl;
         return os;
     }
 

@@ -28,7 +28,7 @@ struct AVL_NODE {
     AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
-        file_stream << node.key << endl;
+        file_stream << node.key ;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
@@ -51,11 +51,9 @@ struct AVL_NODE {
             file_stream >> row;
             node.data.insert(row);
         }
-        string left, right;
         file_stream >> node.left_child;
         file_stream >> node.right_child;
         file_stream >> node.height;
-        move_pointer_ahead(file_stream);
         return file_stream;
     }
 };
@@ -259,7 +257,9 @@ public:
             curr_node.right_child = insert_avl_node(node, curr_node.right_child);
         }
         else {
-            cout << "DUp";
+            // update the data
+            curr_node.data.insert(node.data[0]);
+            write_avl_node(root_path, curr_node);
             return root_path;
         }
         curr_node.height = max(node_height(curr_node.left_child), node_height(curr_node.right_child)) + 1;
