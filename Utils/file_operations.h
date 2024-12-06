@@ -61,8 +61,13 @@ inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode =
     return true;
 }
 
+
 inline void move_pointer_ahead(fstream& file, int n) {
     file.seekp(n, ios::cur);
+}
+
+inline void move_pointer_ahead(fstream& file) {
+    move_pointer_ahead(file, 1);
 }
 
 

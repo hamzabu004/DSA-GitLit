@@ -42,6 +42,11 @@ class GitLite {
 
 public:
     void welcome();
+
+    void print_tree();
+
+    void tree_menu();
+
     void main_menu();
     void init_menu();
     void git_menu();
@@ -55,6 +60,8 @@ public:
 
     // testing
     void fill_initial_csv();
+
+    void load_csv_into_tree();
 };
 
 #endif //GITLITE_H
