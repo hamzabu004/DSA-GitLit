@@ -30,10 +30,9 @@ class GitLite {
     } git_info;
     struct {
         int selected_col;
-        int hash;
         int tree_type;
         int btree_order;
-        int csv_meta;
+        MyString hash;
     } structure_info;
 
     // commit structure
