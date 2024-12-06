@@ -5,10 +5,10 @@
 #ifndef GITLITE_H
 #define GITLITE_H
 #include "STL_STRUCTURES/MyString.h"
+#include "STL_STRUCTURES/MyList.h"
 #include <iostream>
 #include <filesystem>
 
-#include "csv_meta.h"
 #include "GLOBALS.h"
 
 using std::filesystem::path;
