@@ -11,5 +11,7 @@ add_executable(AVL_MAIN
         #        Advance_Structures/AVL.cpp
         ../../Advance_Structures/AVL.h
         ../../Advance_Structures/CSV.h
+        ../../Advance_Structures/Tree.h
+
 )
 
