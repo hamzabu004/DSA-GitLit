@@ -314,6 +314,24 @@ public:
         print_avl_tree<T>(curr_node.right_child);
     }
 
+    static MyString get_column(MyString row, int col) {
+        int i = 0;
+        int j = 0;
+        MyString key;
+        while (row[i] != '\0') {
+            if (row[i] == ',') {
+                j++;
+                i++;
+                continue;
+            }
+            if (j == col) {
+                key.insert_char(row[i]);
+            }
+            i++;
+        }
+        return key;
+    }
+
     static path insert_avl(path csv_path, path parents_folder, int col = 0) {
         fstream file(csv_path, ios::in);
         AVL::parents_folder = parents_folder;
