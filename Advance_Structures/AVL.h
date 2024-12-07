@@ -45,15 +45,17 @@ struct AVL_NODE {
         file_stream >> node.key;
         int size;
         file_stream >> size;
-        move_pointer_ahead(file_stream);
+        move_pointer_ahead(file_stream, 1);
         for (int i = 0; i < size; i++) {
             MyString row;
             file_stream >> row;
             node.data.insert(row);
         }
+        string left, right;
         file_stream >> node.left_child;
         file_stream >> node.right_child;
         file_stream >> node.height;
+        move_pointer_ahead(file_stream, 1);
         return file_stream;
     }
 };
@@ -257,7 +259,7 @@ public:
             curr_node.right_child = insert_avl_node(node, curr_node.right_child);
         }
         else {
-            // update the data
+            // key already exists
             curr_node.data.insert(node.data[0]);
             write_avl_node(root_path, curr_node);
             return root_path;
@@ -310,6 +312,24 @@ public:
         print_avl_tree<T>(curr_node.left_child);
         cout << curr_node.key << endl;
         print_avl_tree<T>(curr_node.right_child);
+    }
+
+    static MyString get_column(MyString row, int col) {
+        int i = 0;
+        int j = 0;
+        MyString key;
+        while (row[i] != '\0') {
+            if (row[i] == ',') {
+                j++;
+                i++;
+                continue;
+            }
+            if (j == col) {
+                key.insert_char(row[i]);
+            }
+            i++;
+        }
+        return key;
     }
 
     static path insert_avl(path csv_path, path parents_folder, int col = 0) {
