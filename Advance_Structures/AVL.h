@@ -31,7 +31,7 @@ struct AVL_NODE {
         file_stream << node.key << endl;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
-            file_stream << node.data[i];
+            file_stream << node.data[i] << endl;
         }
 
         file_stream << node.left_child << endl;
