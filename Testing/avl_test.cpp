@@ -6,7 +6,7 @@
 #include <filesystem>
 #include "../GLOBALS.h"
 #include "../Advance_Structures/AVL.h"
-/*
+/*a
 TEST(AVL, INSERTROOTNODE) {
 
     csv_row rows[1];

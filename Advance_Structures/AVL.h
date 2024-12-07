@@ -1,4 +1,4 @@
-//
+
 // Created by tonystark on 27-Nov-24.
 //
 
@@ -9,12 +9,9 @@
 #include <filesystem>
 #include <fstream>
 
-#include "../Utils/file_operations.h"
-
-
 
 #include "../STL_STRUCTURES/MyList.h"
-
+#include "../Utils/file_operations.h"
 
 
 using namespace std;
@@ -22,14 +19,13 @@ using namespace std::filesystem;
 
 template<typename T>
 struct AVL_NODE {
+
     T key;
-    MyList<csv_row> data;
+    MyList<MyString> data;
     path left_child;
     path right_child;
     int height;
-    // node hash
-    MyString hash;
-    AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0), hash("") {}
+    AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
         file_stream << node.key << endl;
@@ -42,7 +38,6 @@ struct AVL_NODE {
         file_stream << node.right_child << endl;
 
         file_stream << node.height << endl;
-        file_stream << node.hash << endl;
         return file_stream;
     }
 
@@ -52,7 +47,7 @@ struct AVL_NODE {
         file_stream >> size;
         move_pointer_ahead(file_stream);
         for (int i = 0; i < size; i++) {
-            csv_row row;
+            MyString row;
             file_stream >> row;
             node.data.insert(row);
         }
@@ -61,7 +56,6 @@ struct AVL_NODE {
         file_stream >> node.right_child;
         file_stream >> node.height;
         move_pointer_ahead(file_stream);
-        file_stream >> node.hash;
         return file_stream;
     }
 };
@@ -265,7 +259,9 @@ public:
             curr_node.right_child = insert_avl_node(node, curr_node.right_child);
         }
         else {
-            cout << "DUp";
+            // key already exists
+            curr_node.data.insert(node.data[0]);
+            write_avl_node(root_path, curr_node);
             return root_path;
         }
         curr_node.height = max(node_height(curr_node.left_child), node_height(curr_node.right_child)) + 1;
@@ -315,48 +311,12 @@ public:
         read_avl_node(root, curr_node);
         print_avl_tree<T>(curr_node.left_child);
         cout << curr_node.key << endl;
-        for (int i = 0; i < curr_node.data.get_size(); i++) {
-            cout << curr_node.data[i] << endl;
-        }
         print_avl_tree<T>(curr_node.right_child);
     }
 
 
-    static path insert_avl(path csv_path, path parent) {
-        // path csv_path = "/media/ht/01DB003D88B96CA0/Sem3/Data/Project/dataset20.csv";
-        fstream file(csv_path, ios::in);
 
-        AVL::parents_folder = parent;
-        // ignore columns
-        char temp[10000];
-        // ignore first line of columns
-        file.getline(temp, 10000);
-        // path parent = git_info.repo_name / git_info.branches[git_info.current_branch] / "tree";
-        std::filesystem::path avl_tree = "NULL";
-        int i = 0;
-        while (!file.eof() && temp[0] != '\n') {
 
-            AVL_NODE<MyString> new_node;
-            csv_row row;
-            file.getline(temp, 10000);
-            if (temp[0] == '\0') break;
-            map_str_row_to_csv_row(temp, row);
-            // cout << row << endl;
-            new_node.data.insert(row);
-            new_node.key = get_key(row, 0);
-            new_node.hash = "HASH";
-            // cout << "Inserting node " << i++ << endl;
-            avl_tree = AVL::insert_avl_node(new_node, avl_tree);
-        }
-        cout << endl << "end of teh world" << endl;
-        return avl_tree;
-    }
-    void build_merkle_tree(path root) {
-        // read the tree
-        // hash the data
-        // write the hash
-        // call the function recursively
-    };
 };
 
 path AVL::parents_folder = "";

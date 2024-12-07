@@ -59,7 +59,7 @@ struct RedBlack_Node {
         file_stream >> size;
         move_pointer_ahead(file_stream);
         for (int i = 0; i < size; i++) {
-            csv_row row;
+            MyString row;
             file_stream >> row;
             node.data.insert(row);
         }
@@ -288,10 +288,11 @@ filesystem::path insert_redblack_node(RedBlack_Node<T>& z, filesystem::path root
         write_RedBlack_node(z_path, z);
     }
 
-    root_path = fix_insertion(root_path, filesystem::path(std::to_string(z.key)));
+    root_path = fix_insertion<T>(root_path, filesystem::path(std::to_string(z.key)), root_path);
     return root_path;
 }
 
+template<typename T>
 bool isBlack(const filesystem::path& node_path) {
     if (node_path == "NULL") {
         return true; // Treat null nodes as black.
