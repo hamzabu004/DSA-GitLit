@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 using std::fstream;
 using namespace std::filesystem;
@@ -18,6 +19,9 @@ using namespace std::filesystem;
 using std::ios;
 using std::string;
 using std::getline;
+using std::left;
+using std::setfill;
+using std::setw;
 
 
 inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
@@ -39,6 +43,22 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
     }
     else {
         throw std::runtime_error("File not found at extracting columns");
+    }
+    return columns;
+}
+
+inline MyList<MyString> get_columns(MyString row) {
+
+    MyList<MyString> columns;
+    int i = 0;
+    while (row[i] != '\0') {
+        MyString col_name;
+        while (row[i] != ',' && row[i] != '\0') {
+            col_name.insert_char(row[i]);
+            i++;
+        }
+        columns.insert(col_name);
+        i++;
     }
     return columns;
 }
@@ -84,6 +104,67 @@ inline MyString get_column(MyString row, int col) {
         i++;
     }
     return column;
+}
+
+
+
+inline void prettyPrint(MyString row) {
+    const int columnWidth = 20;
+
+    MyList<MyString> fields = get_columns(row);
+    for (int i = 0; i < fields.get_size(); i++) {
+
+        cout << setw(20);
+        cout << fields[i] << setfill(' ');;
+    }
+    cout << " ";
+
+    cout << endl;
+}
+
+inline void prettyPrint(MyList<MyString> fields) {
+    const int columnWidth = 20;
+    for (int i = 0; i < fields.get_size(); i++) {
+
+        cout << setw(20);
+        cout << fields[i] << setfill(' ');;
+    }
+    cout << " ";
+
+    cout << endl;
+}
+
+inline MyString get_str_row(MyList<MyString> fields) {
+    MyString row;
+    for (int i = 0; i < fields.get_size(); i++) {
+        row += fields[i];
+        if (i != fields.get_size() - 1) {
+            row += ",";
+        }
+    }
+    return row;
+}
+
+inline void update_row(MyString& row, MyString updated_val, int col_num) {
+    int i = 0;
+    int j = 0;
+    MyString new_row;
+    while (row[i] != '\0') {
+        if (row[i] == ',') {
+            j++;
+            i++;
+            continue;
+        }
+        if (j == col_num) {
+            new_row += updated_val;
+            i += updated_val.size();
+        }
+        else {
+            new_row.insert_char(row[i]);
+        }
+        i++;
+    }
+    file << new_row;
 }
 
 

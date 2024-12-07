@@ -36,7 +36,6 @@ public:
         if (pos == -1) {
             pos = len;
         }
-
         char* new_str = new char[len + 2];
         for (int i = 0; i < pos; i++) {
             new_str[i] = str[i];
@@ -112,7 +111,7 @@ public:
         delete[] str;
     }
     friend std::ostream& operator<<(std::ostream& os, const MyString& s) {
-        os << s.str << endl;
+        os << s.str ;
         return os;
     }
 
@@ -129,8 +128,29 @@ public:
         return is;
     }
 
-
+    MyString &operator+=(const MyString & field);
+    MyString operator+=(const char* arr);
 };
+
+inline MyString & MyString::operator+=(const MyString &field) {
+    char* new_str = new char[len + field.len + 1];
+    if (str != nullptr) strcpy(new_str, str);
+    strcpy(new_str + len, field.str);
+    delete[] str;
+    str = new_str;
+    len += field.len;
+    return *this;
+}
+
+inline MyString MyString::operator+=(const char *arr) {
+    char* new_str = new char[len + strlen(arr) + 1];
+    strcpy(new_str, arr);
+    if (str != nullptr) strcpy(new_str + len, str);
+    delete[] str;
+    str = new_str;
+    len += strlen(arr);
+    return *this;
+}
 
 
 #endif //MYSTRING_H

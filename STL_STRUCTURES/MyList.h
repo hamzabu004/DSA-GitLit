@@ -79,6 +79,23 @@ public:
         }
         return temp->data;
     }
+    MyList(const MyList<T>& list): head(nullptr), tail(nullptr), size(0) {
+        TreeNode<T>* temp = list.head;
+        while (temp != nullptr) {
+            insert(temp->data);
+            temp = temp->next;
+        }
+    }
+    MyList<T>& operator=(const MyList<T>& list) {
+        clear();
+        TreeNode<T>* temp = list.head;
+        while (temp != nullptr) {
+            insert(temp->data);
+            temp = temp->next;
+        }
+        return *this;
+    }
+
     int get_size() const {
         return size;
     }
@@ -105,6 +122,7 @@ public:
     ~MyList() {
         clear();
     }
+
 };
 
 

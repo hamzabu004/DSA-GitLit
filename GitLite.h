@@ -85,6 +85,8 @@ class GitLite {
     } git_info;
 
     struct {
+        int num_cols;
+        MyList<MyString> col_names;
         int selected_col;
         int tree_type;
         int btree_order;
@@ -93,6 +95,10 @@ class GitLite {
         void write_meta(path repo) {
             std::fstream file;
             open_file(file, repo / "structure_meta", ios::out);
+            file << num_cols << endl;
+            for (int i = 0; i < col_names.get_size(); i++) {
+                file << col_names[i] << endl;
+            }
             file << selected_col << endl;
             file << tree_type << endl;
             file << btree_order << endl;
@@ -100,10 +106,16 @@ class GitLite {
             file.close();
         }
 
-
         void read_meta(path repo) {
             std::fstream file;
             open_file(file, repo / "structure_meta", ios::in);
+            file >> num_cols;
+            file.get();
+            for (int i = 0; i < num_cols; i++) {
+                MyString col_name;
+                file >> col_name;
+                col_names.insert(col_name);
+            }
             file >> selected_col;
             file >> tree_type;
             file >> btree_order;
@@ -114,18 +126,35 @@ class GitLite {
 
     // commit structure
     path csv_path;
-	MyString title_str = "   ________.__  __  .____    .__  __          \n  /  _____/|__|/  |_|    |   |__|/  |_  ____ \n /   \\  ___|  \\   __\\    |   |  \\   __\\/ __ \\ \n \\    \\_\\  \\  ||  | |    |___|  ||  | \\  ___/ \n  \\______  /__||__| |_______ \\__||__|  \\___  > \n         \\/                 \\/             \\/";
+    MyString title_str = RED;
+    title_str += "   ________.__  __";
+    // LITE_COLOR  "  .____.    __  __          \n";
+    // RESET;
+    // title_str += GIT_COLOR"  /  _____/|__|/  |_" LITE_COLOR "|    |   |__|/  |_  ____ \n" RESET;
+    // title_str += GIT_COLOR " /   \\  ___|  \\   __\\" LITE_COLOR "    |   |  \\   __\\/ __ \\ \n" RESET;
+    // title_str += GIT_COLOR " \\    \\_\\  \\  ||  |" LITE_COLOR" |    |___|  ||  | \\  ___/ \n" RESET;
+    // title_str += GIT_COLOR "  \\______  /__||__|" LITE_COLOR " |_______ \\__||__|  \\___  > \n" RESET;
+    // title_str += GIT_COLOR "         \\/                 " LITE_COLOR "\\/             \\/" RESET;
 
 public:
     void welcome();
 
     void print_tree();
 
+    void search_tree();
+
+    void insert_tree();
+
+    void update_tree();
+
     void tree_menu();
 
     void main_menu();
     void init_menu();
     void git_menu();
+
+    void initial_data_collection();
+
     void git_init();
     void git_list_branches();
     // related to commit

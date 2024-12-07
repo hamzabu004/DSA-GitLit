@@ -31,7 +31,7 @@ struct AVL_NODE {
         file_stream << node.key << endl;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
-            file_stream << node.data[i];
+            file_stream << node.data[i] << endl;
         }
 
         file_stream << node.left_child << endl;
@@ -242,8 +242,6 @@ public:
             return node_path;
         }
 
-
-
         AVL_NODE<MyString> curr_node;
         read_avl_node(root_path, curr_node);
         // read left and right child
@@ -308,11 +306,15 @@ public:
     static void print_avl_tree(path root) {
         if (root == "NULL") return;
         AVL_NODE<MyString> curr_node;
-        read_avl_node(root, curr_node);
+        read_avl_node( root, curr_node);
         print_avl_tree<T>(curr_node.left_child);
-        cout << curr_node.key << endl;
+        for (int i = 0; i < curr_node.data.get_size(); i++) {
+            prettyPrint(curr_node.data[i]);
+        }
         print_avl_tree<T>(curr_node.right_child);
     }
+
+
 
     static path insert_avl(path csv_path, path parents_folder, int col = 0) {
         fstream file(csv_path, ios::in);
@@ -341,8 +343,22 @@ public:
         return avl_tree;
     }
 
-
+    static path search_avl(path root, MyString key) {
+        if (root == "NULL") return "NULL";
+        AVL_NODE<MyString> curr_node;
+        read_avl_node(root, curr_node);
+        if (curr_node.key == key) {
+            return root;
+        }
+        else if (curr_node.key > key) {
+            return search_avl(curr_node.left_child, key);
+        }
+        else {
+            return search_avl(curr_node.right_child, key);
+        }
+    }
 };
 
 path AVL::parents_folder = "";
+
 #endif //AVL_H

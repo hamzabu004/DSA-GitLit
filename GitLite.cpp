@@ -14,43 +14,9 @@ void GitLite::welcome() {
     cout << title_str << endl;
 
     cout << "Welcome to GitLite\n";
-    cout << "Enter full csv path: ";
-    cin >> csv_path;
-    if (!std::filesystem::exists(csv_path)) {
-        cout << "File not found\n";
-        throw std::runtime_error("File not found");
-    }
-
     cout << "Enter repo name: ";
     cin >> git_info.repo_name;
 
-    MyList<MyString> columns = get_columns(csv_path);
-    cout << "Columns: " << endl;
-
-    for (int i = 0; i < columns.get_size(); i++) {
-        cout << i << ". " << columns[i] << endl;
-    }
-
-    cout << "Select Column(0-indexed): ";
-    cin >> structure_info.selected_col;
-
-    cout << "Enter preferred tree type (0 for AVL, 1 for Red-Black, 2 for Btree): ";
-    cin >> structure_info.tree_type;
-    if (structure_info.tree_type == tree_type::BTree) {
-        cout << "Enter Btree order: ";
-        cin >> structure_info.btree_order;
-    }
-    else if (structure_info.tree_type != tree_type::AVL && structure_info.tree_type != tree_type::RBT) {
-        cout << "Invalid tree type. Selecting default_tree\n";
-        structure_info.btree_order = tree_type::AVL;
-    }
-
-    cout << "Enter preferred hash type (0 for custom hash, 1 for SHA256): ";
-    cin >> structure_info.hash;
-    if (structure_info.hash != hash_type::I_HASH && structure_info.hash != hash_type::SHA256) {
-        cout << "Invalid hash type. Selecting default_hash\n";
-        structure_info.hash = hash_type::SHA256;
-    }
     git_init();
     // main_menu();
 
@@ -58,8 +24,17 @@ void GitLite::welcome() {
 }
 
 void GitLite::print_tree() {
+    // print colum names
+    for (int i = 0; i < structure_info.col_names.get_size(); i++) {
+        // same line with width of 20
+        cout << setw(20) ;
+        cout << structure_info.col_names[i] << setfill(' ');
+
+
+    }
+    cout << endl;
     if (structure_info.tree_type == tree_type::AVL) {
-        AVL::print_avl_tree<MyString>(git_info.repo_name / git_info.branches[git_info.current_branch] / "tree");
+        AVL::print_avl_tree<MyString>(branch_meta.tree_root);
     }
     else if (structure_info.tree_type == tree_type::RBT) {
         // RBT::print_rbt_tree();
@@ -69,6 +44,134 @@ void GitLite::print_tree() {
     }
 }
 
+void GitLite::search_tree() {
+    MyString search_key;
+    cout << "Enter key to search: ";
+    std::cin.ignore();
+    cin >> search_key;
+    if (structure_info.tree_type == tree_type::AVL) {
+        path key_node = AVL::search_avl(branch_meta.tree_root, search_key);
+        if (key_node == "NULL") {
+            cout << "Key not found\n";
+            return;
+        }
+        else {
+            prettyPrint(structure_info.col_names);
+            AVL_NODE<MyString> node;
+            AVL::read_avl_node(key_node, node);
+            for (int i = 0; i < node.data.get_size(); i++) {
+                prettyPrint(node.data[i]);
+            }
+        }
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::search_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::search_btree_tree();
+    }
+}
+
+void GitLite::insert_tree() {
+    if (structure_info.tree_type == tree_type::AVL) {
+        AVL_NODE<MyString> new_node;
+        new_node.key = "NULL";
+        new_node.height = 0;
+        new_node.left_child = "NULL";
+        new_node.right_child = "NULL";
+        MyString data;
+        // read all fields
+        std::cin.ignore();
+        for (int i = 0; i < structure_info.num_cols; i++) {
+            MyString field;
+            // comma for all except first
+            if (i != 0) {
+                data.insert_char(',');
+            }
+
+            cout << "Enter " << structure_info.col_names[i] << ": ";
+
+            cin >> field;
+
+            data += field;
+            // set key field
+            if (i == structure_info.selected_col) {
+                new_node.key = field;
+            }
+            // data.insert(field);
+        }
+        new_node.data.insert(data);
+        branch_meta.tree_root = AVL::insert_avl_node(new_node, branch_meta.tree_root);
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::insert_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::insert_btree_tree();
+    }
+}
+
+void GitLite::update_tree() {
+    cout << "Enter key to update: ";
+    MyString search_key;
+    std::cin.ignore();
+    cin >> search_key;
+
+    // search for key
+    if (structure_info.tree_type == tree_type::AVL) {
+        path key_node = AVL::search_avl(branch_meta.tree_root, search_key);
+        if (key_node == "NULL") {
+            cout << "Key not found\n";
+            return;
+        }
+        else {
+            AVL_NODE<MyString> node;
+            AVL::read_avl_node(key_node, node);
+            prettyPrint(structure_info.col_names);
+            for (int i = 0; i < node.data.get_size(); i++) {
+                prettyPrint(node.data[i]);
+            }
+
+            // select field
+            int col;
+            cout << "Enter column number to update: ";
+            cin >> col;
+
+
+            // ask for which row to update
+            int row = 0;
+            cout << "Enter row number to update (" << 0  << "-"<< node.data.get_size() - 1  << "). -1 for all : ";
+            cin >> row;
+
+            // get new field value
+            MyString new_data;
+            cout << "Enter new value: ";
+            cin >> new_data;
+
+
+            // for all row
+            if (row == -1) {
+                for (int i = 0; i < node.data.get_size(); i++) {
+                    update_row(node.data[i], new_data, col);
+                }
+            }
+            else {
+                update_row(node.data[row], new_data, col);
+            }
+
+            // write to disk
+            AVL::write_avl_node(key_node, node);
+        }
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::update_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::update_btree_tree();
+    }
+}
+
+
 void GitLite::tree_menu() {
     while (true) {
         system("clear");
@@ -77,8 +180,9 @@ void GitLite::tree_menu() {
         cout << "1. Print Tree\n";
         cout << "2. Search Tree\n";
         cout << "3. Insert into Tree\n";
-        cout << "4. Delete from Tree\n";
-        cout << "5. Back\n";
+        cout << "4. Update into Tree\n";
+        cout << "5. Delete from Tree\n";
+        cout << "6. Back\n";
 
         int choice;
         cout << " => ";
@@ -89,15 +193,18 @@ void GitLite::tree_menu() {
                 print_tree();
                 break;
             case 2:
-                // search_tree();
+                search_tree();
                 break;
             case 3:
-                // insert_tree();
+                insert_tree();
                 break;
             case 4:
-                // delete_tree();
-                break;
+                update_tree();
+                    break;
             case 5:
+                // delete_tree();
+                    break;
+            case 6:
                 return;
         }
     }
@@ -178,6 +285,45 @@ void GitLite::git_menu() {
     }
 }
 
+void GitLite::initial_data_collection() {
+    cout << "Enter full csv path: ";
+    cin >> csv_path;
+    if (!std::filesystem::exists(csv_path)) {
+        cout << "File not found\n";
+        throw std::runtime_error("File not found");
+    }
+
+    structure_info.col_names = get_columns(csv_path);
+    structure_info.num_cols = structure_info.col_names.get_size();
+    cout << "Columns: " << endl;
+
+    for (int i = 0; i < structure_info.num_cols; i++) {
+        cout << i << ". " << structure_info.col_names[i] << endl;
+    }
+
+    cout << "Select Column(0-indexed): ";
+    cin >> structure_info.selected_col;
+
+    cout << "Enter preferred tree type (0 for AVL, 1 for Red-Black, 2 for Btree): ";
+    cin >> structure_info.tree_type;
+    if (structure_info.tree_type == tree_type::BTree) {
+        cout << "Enter Btree order: ";
+        cin >> structure_info.btree_order;
+    }
+    else if (structure_info.tree_type != tree_type::AVL && structure_info.tree_type != tree_type::RBT) {
+        cout << "Invalid tree type. Selecting default_tree\n";
+        structure_info.btree_order = tree_type::AVL;
+    }
+
+    cout << "Enter preferred hash type (0 for custom hash, 1 for SHA256): ";
+    cin >> structure_info.hash;
+    if (structure_info.hash != hash_type::I_HASH && structure_info.hash != hash_type::SHA256) {
+        cout << "Invalid hash type. Selecting default_hash\n";
+        structure_info.hash = hash_type::SHA256;
+    }
+}
+
+
 void GitLite::git_init() {
     // check for existing repo
     if (std::filesystem::exists(git_info.repo_name)) {
@@ -186,39 +332,43 @@ void GitLite::git_init() {
         git_info.read_meta();
         branch_meta.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
         structure_info.read_meta(git_info.repo_name);
-
-
+        AVL::parents_folder = git_info.repo_name / git_info.branches[0] / "tree";
         return;
     }
     else {
+        initial_data_collection();
+        // create folder for repo
+        std::filesystem::create_directory(git_info.repo_name);
+        // create master branch
+        git_info.branches.insert("master");
+        git_info.current_branch = 0;
+
+        // write meta data to disk
+        git_info.write_meta();
+
+
+
+        // moving toward branch`s folder
+        std::filesystem::create_directory(git_info.repo_name / git_info.branches[0]);
+        branch_meta.branch_name = git_info.branches[0];
+        branch_meta.write_meta(git_info.repo_name);
+
+        AVL::parents_folder = git_info.repo_name / git_info.branches[0] / "tree";
+        cout << AVL::parents_folder << endl;
+        // tree folder
+        std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "tree");
+        // commit folder
+        std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "commit");
+        // merkle folder
+        std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "merkle");
+
+
+        // read op will only read from ram
+        // write op will write to disk
+        // yet to decide structure of files
         load_csv_into_tree();
     }
-    // create folder for repo
-    std::filesystem::create_directory(git_info.repo_name);
-    // create master branch
-    git_info.branches.insert("master");
-    git_info.current_branch = 0;
 
-    // write meta data to disk
-    git_info.write_meta();
-
-
-
-    // moving toward branch`s folder
-    std::filesystem::create_directory(git_info.repo_name / git_info.branches[0]);
-    branch_meta.branch_name = git_info.branches[0];
-    branch_meta.write_meta(git_info.repo_name);
-
-    // tree folder
-    std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "tree");
-    // commit folder
-    std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "commit");
-    // merkle folder
-    std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "merkle");
-
-    // read op will only read from ram
-    // write op will write to disk
-    // yet to decide structure of files
 
 }
 
@@ -282,6 +432,7 @@ void GitLite::git_new_branch() {
 
 void GitLite::run() {
     welcome();
+    main_menu();
 }
 
 void GitLite::fill_initial_csv() {
@@ -296,7 +447,8 @@ void GitLite::fill_initial_csv() {
 void GitLite::load_csv_into_tree() {
     if (structure_info.tree_type == tree_type::AVL) {
         branch_meta.tree_root = AVL::insert_avl(csv_path,
-            git_info.repo_name / git_info.branches[git_info.current_branch] / "tree");
+            git_info.repo_name / git_info.branches[git_info.current_branch] / "tree",
+            structure_info.selected_col);
         structure_info.tree_type = tree_type::AVL;
 
         // sync with disc
