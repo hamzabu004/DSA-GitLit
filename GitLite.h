@@ -127,11 +127,11 @@ public:
     void init_menu();
     void git_menu();
     void git_init();
-    void git_add();
+    void git_list_branches();
+    // related to commit
     void git_commit();
     void git_log();
     void git_checkout();
-    void git_reset();
     void git_new_branch();
 
     void run();

@@ -4,6 +4,8 @@
 
 #include "GitLite.h"
 
+#include <thread>
+
 #include "GLOBALS.h"
 #include "Advance_Structures/AVL.h"
 #include "Utils/file_operations.h"
@@ -143,7 +145,8 @@ void GitLite::git_menu() {
         cout << "3. Commit\n";
         cout << "4. Log\n";
         cout << "5. Checkout\n";
-        cout << "6. Exit\n";
+        cout << "6. Merge\n";
+        cout << "7. Exit\n";
 
         int choice;
         cout << " => ";
@@ -154,18 +157,22 @@ void GitLite::git_menu() {
                 git_new_branch();
             break;
             case 2:
-                // list_branch();
+                git_list_branches();
                     break;
             case 3:
-                // commit();
+                // git_commit();
                     break;
             case 4:
-                // log();
+                // git_log();
                     break;
             case 5:
-                // checkout();
+                git_checkout();
                     break;
             case 6:
+                // git_merge();
+                    break;
+                break;
+            case 7:
                 return;
         }
     }
@@ -213,6 +220,32 @@ void GitLite::git_init() {
     // write op will write to disk
     // yet to decide structure of files
 
+}
+
+void GitLite::git_list_branches() {
+    for (int i = 0; i < git_info.branches.get_size(); i++) {
+        cout << 1 + i << ". " << git_info.branches[i] << endl;
+    }
+}
+
+void GitLite::git_checkout() {
+    // if staging area is not empty
+    // first commit or ignore changes after last commit
+    // return;
+    git_list_branches();
+    cout << "Enter branch number: ";
+    int branch_num;
+    cin >> branch_num;
+    if (branch_num < 1 || branch_num > git_info.branches.get_size()) {
+        cout << "Invalid branch number\n";
+        return;
+    }
+    git_info.current_branch = branch_num - 1;
+    branch_meta.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+
+    cout << "Switched to " << git_info.branches[git_info.current_branch] << endl;
+    // delay of 1 sec
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void GitLite::git_new_branch() {
