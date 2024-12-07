@@ -28,7 +28,7 @@ struct AVL_NODE {
     AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
-        file_stream << node.key ;
+        file_stream << node.key << endl;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
@@ -308,9 +308,11 @@ public:
     static void print_avl_tree(path root) {
         if (root == "NULL") return;
         AVL_NODE<MyString> curr_node;
-        read_avl_node(root, curr_node);
+        read_avl_node( root, curr_node);
         print_avl_tree<T>(curr_node.left_child);
-
+        for (int i = 0; i < curr_node.data.get_size(); i++) {
+            prettyPrint(curr_node.data[i]);
+        }
         print_avl_tree<T>(curr_node.right_child);
     }
 
@@ -357,6 +359,21 @@ public:
         }
         cout << endl << "end of teh world" << endl;
         return avl_tree;
+    }
+
+    static path search_avl(path root, MyString key) {
+        if (root == "NULL") return "NULL";
+        AVL_NODE<MyString> curr_node;
+        read_avl_node(root, curr_node);
+        if (curr_node.key == key) {
+            return root;
+        }
+        else if (curr_node.key > key) {
+            return search_avl(curr_node.left_child, key);
+        }
+        else {
+            return search_avl(curr_node.right_child, key);
+        }
     }
 };
 

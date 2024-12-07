@@ -97,7 +97,7 @@ class GitLite {
             open_file(file, repo / "structure_meta", ios::out);
             file << num_cols << endl;
             for (int i = 0; i < col_names.get_size(); i++) {
-                file << col_names[i];
+                file << col_names[i] << endl;
             }
             file << selected_col << endl;
             file << tree_type << endl;
@@ -132,6 +132,10 @@ public:
     void welcome();
 
     void print_tree();
+
+    void search_tree();
+
+    void insert_tree();
 
     void tree_menu();
 

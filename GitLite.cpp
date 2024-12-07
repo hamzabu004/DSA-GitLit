@@ -27,15 +27,14 @@ void GitLite::print_tree() {
     // print colum names
     for (int i = 0; i < structure_info.col_names.get_size(); i++) {
         // same line with width of 20
-
-        cout << structure_info.col_names[i] ;
-        cout << setw(20 - structure_info.col_names[i].size()) << setfill(' ');
+        cout << setw(20) ;
+        cout << structure_info.col_names[i] << setfill(' ');
 
 
     }
     cout << endl;
     if (structure_info.tree_type == tree_type::AVL) {
-        AVL::print_avl_tree<MyString>(git_info.repo_name / git_info.branches[git_info.current_branch] / "tree");
+        AVL::print_avl_tree<MyString>(branch_meta.tree_root);
     }
     else if (structure_info.tree_type == tree_type::RBT) {
         // RBT::print_rbt_tree();
@@ -45,6 +44,69 @@ void GitLite::print_tree() {
     }
 }
 
+void GitLite::search_tree() {
+    MyString search_key;
+    cout << "Enter key to search: ";
+    std::cin.ignore();
+    cin >> search_key;
+    if (structure_info.tree_type == tree_type::AVL) {
+        path key_node = AVL::search_avl(branch_meta.tree_root, search_key);
+        if (key_node == "NULL") {
+            cout << "Key not found\n";
+            return;
+        }
+        else {
+            prettyPrint(structure_info.col_names);
+            AVL_NODE<MyString> node;
+            AVL::read_avl_node(key_node, node);
+            for (int i = 0; i < node.data.get_size(); i++) {
+                prettyPrint(node.data[i]);
+            }
+        }
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::search_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::search_btree_tree();
+    }
+}
+
+void GitLite::insert_tree() {
+    if (structure_info.tree_type == tree_type::AVL) {
+        AVL_NODE<MyString> new_node;
+        new_node.key = "NULL";
+        new_node.height = 0;
+        new_node.left_child = "NULL";
+        new_node.right_child = "NULL";
+        MyString data;
+        for (int i = 0; i < structure_info.num_cols; i++) {
+            MyString field;
+            if (i != 0) {
+                data.insert_char(',');
+            }
+
+            cout << "Enter " << structure_info.col_names[i] << ": ";
+            std::cin.ignore();
+            cin >> field;
+
+            if (i == structure_info.selected_col) {
+                new_node.key = field;
+            }
+            // data.insert(field);
+        }
+        new_node.data.insert(data);
+        branch_meta.tree_root = AVL::insert_avl_node(new_node, branch_meta.tree_root);
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::insert_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::insert_btree_tree();
+    }
+}
+
+
 void GitLite::tree_menu() {
     while (true) {
         system("clear");
@@ -53,8 +115,9 @@ void GitLite::tree_menu() {
         cout << "1. Print Tree\n";
         cout << "2. Search Tree\n";
         cout << "3. Insert into Tree\n";
-        cout << "4. Delete from Tree\n";
-        cout << "5. Back\n";
+        cout << "4. Update into Tree\n";
+        cout << "5. Delete from Tree\n";
+        cout << "6. Back\n";
 
         int choice;
         cout << " => ";
@@ -65,15 +128,18 @@ void GitLite::tree_menu() {
                 print_tree();
                 break;
             case 2:
-                // search_tree();
+                search_tree();
                 break;
             case 3:
-                // insert_tree();
+                insert_tree();
                 break;
             case 4:
-                // delete_tree();
-                break;
+                // update_tree();
+                    break;
             case 5:
+                // delete_tree();
+                    break;
+            case 6:
                 return;
         }
     }
@@ -201,6 +267,7 @@ void GitLite::git_init() {
         git_info.read_meta();
         branch_meta.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
         structure_info.read_meta(git_info.repo_name);
+        AVL::parents_folder = git_info.repo_name / git_info.branches[0] / "tree";
         return;
     }
     else {
@@ -221,12 +288,15 @@ void GitLite::git_init() {
         branch_meta.branch_name = git_info.branches[0];
         branch_meta.write_meta(git_info.repo_name);
 
+        AVL::parents_folder = git_info.repo_name / git_info.branches[0] / "tree";
+        cout << AVL::parents_folder << endl;
         // tree folder
         std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "tree");
         // commit folder
         std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "commit");
         // merkle folder
         std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "merkle");
+
 
         // read op will only read from ram
         // write op will write to disk

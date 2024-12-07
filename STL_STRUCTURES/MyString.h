@@ -36,7 +36,6 @@ public:
         if (pos == -1) {
             pos = len;
         }
-
         char* new_str = new char[len + 2];
         for (int i = 0; i < pos; i++) {
             new_str[i] = str[i];
@@ -112,7 +111,7 @@ public:
         delete[] str;
     }
     friend std::ostream& operator<<(std::ostream& os, const MyString& s) {
-        os << s.str << endl;
+        os << s.str ;
         return os;
     }
 
