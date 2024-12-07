@@ -4,11 +4,14 @@
 
 #ifndef MYSTRING_H
 #define MYSTRING_H
+#include <iostream>
 #include <ostream>
 #include <cstring>
 #include <filesystem>
 
 using std::strlen;
+using std::strcpy;
+using std::endl;
 
 class MyString {
     char* str;
@@ -109,7 +112,7 @@ public:
         delete[] str;
     }
     friend std::ostream& operator<<(std::ostream& os, const MyString& s) {
-        os << s.str;
+        os << s.str << endl;
         return os;
     }
 

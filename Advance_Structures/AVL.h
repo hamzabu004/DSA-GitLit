@@ -1,4 +1,4 @@
-
+//
 // Created by tonystark on 27-Nov-24.
 //
 
@@ -45,7 +45,7 @@ struct AVL_NODE {
         file_stream >> node.key;
         int size;
         file_stream >> size;
-        move_pointer_ahead(file_stream);
+        move_pointer_ahead(file_stream, 1);
         for (int i = 0; i < size; i++) {
             MyString row;
             file_stream >> row;
@@ -55,7 +55,7 @@ struct AVL_NODE {
         file_stream >> node.left_child;
         file_stream >> node.right_child;
         file_stream >> node.height;
-        move_pointer_ahead(file_stream);
+        move_pointer_ahead(file_stream, 1);
         return file_stream;
     }
 };

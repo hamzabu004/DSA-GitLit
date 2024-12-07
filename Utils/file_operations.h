@@ -64,6 +64,28 @@ inline void move_pointer_ahead(fstream& file, int n = 1) {
     file.seekp(n, ios::cur);
 }
 
+inline void move_pointer_ahead(fstream& file) {
+    move_pointer_ahead(file, 1);
+}
+
+inline MyString get_column(MyString row, int col) {
+    MyString column;
+    int i = 0;
+    int j = 0;
+    while (row[i] != '\0') {
+        if (row[i] == ',') {
+            j++;
+            i++;
+            continue;
+        }
+        if (j == col) {
+            column.insert_char(row[i]);
+        }
+        i++;
+    }
+    return column;
+}
+
 
 
 

@@ -4,6 +4,8 @@
 
 #include "GitLite.h"
 
+#include <thread>
+
 #include "GLOBALS.h"
 #include "Advance_Structures/AVL.h"
 #include "Utils/file_operations.h"
@@ -119,7 +121,7 @@ void GitLite::main_menu() {
 
         switch (choice) {
             case 1:
-                //git_menu();
+                git_menu();
                 break;
             case 2:
                 tree_menu();
@@ -130,13 +132,66 @@ void GitLite::main_menu() {
     }
 }
 
+void GitLite::git_menu() {
+    // git menu
+    // merge, branch, commit, log, checkout
+    while (true) {
+        system("clear");
+        cout << title_str << endl;
+        cout << "###Git Menu###\n";
+        cout << "Current Branch: " << git_info.branches[git_info.current_branch] << endl;
+        cout << "1. New Branch\n";
+        cout << "2. List Branch\n";
+        cout << "3. Commit\n";
+        cout << "4. Log\n";
+        cout << "5. Checkout\n";
+        cout << "6. Merge\n";
+        cout << "7. Exit\n";
+
+        int choice;
+        cout << " => ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                git_new_branch();
+            break;
+            case 2:
+                git_list_branches();
+                    break;
+            case 3:
+                // git_commit();
+                    break;
+            case 4:
+                // git_log();
+                    break;
+            case 5:
+                git_checkout();
+                    break;
+            case 6:
+                // git_merge();
+                    break;
+                break;
+            case 7:
+                return;
+        }
+    }
+}
+
 void GitLite::git_init() {
     // check for existing repo
     if (std::filesystem::exists(git_info.repo_name)) {
         cout << "Repo already exists\n";
-        // load repo , branches, tree, commit, merkle
+        // load repo, branch, strcuture info
+        git_info.read_meta();
+        branch_meta.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+        structure_info.read_meta(git_info.repo_name);
+
 
         return;
+    }
+    else {
+        load_csv_into_tree();
     }
     // create folder for repo
     std::filesystem::create_directory(git_info.repo_name);
@@ -145,16 +200,15 @@ void GitLite::git_init() {
     git_info.current_branch = 0;
 
     // write meta data to disk
-    fstream file;
-    open_file(file, git_info.repo_name / "git_meta", ios::out);
-    file << git_info.repo_name << endl;
-    file << git_info.branches[0] << endl;
-    file << git_info.current_branch << endl;
-    file.close();
+    git_info.write_meta();
 
 
 
+    // moving toward branch`s folder
     std::filesystem::create_directory(git_info.repo_name / git_info.branches[0]);
+    branch_meta.branch_name = git_info.branches[0];
+    branch_meta.write_meta(git_info.repo_name);
+
     // tree folder
     std::filesystem::create_directory(git_info.repo_name / git_info.branches[0] / "tree");
     // commit folder
@@ -166,6 +220,64 @@ void GitLite::git_init() {
     // write op will write to disk
     // yet to decide structure of files
 
+}
+
+void GitLite::git_list_branches() {
+    for (int i = 0; i < git_info.branches.get_size(); i++) {
+        cout << 1 + i << ". " << git_info.branches[i] << endl;
+    }
+}
+
+void GitLite::git_checkout() {
+    // if staging area is not empty
+    // first commit or ignore changes after last commit
+    // return;
+    git_list_branches();
+    cout << "Enter branch number: ";
+    int branch_num;
+    cin >> branch_num;
+    if (branch_num < 1 || branch_num > git_info.branches.get_size()) {
+        cout << "Invalid branch number\n";
+        return;
+    }
+    git_info.current_branch = branch_num - 1;
+    branch_meta.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+
+    cout << "Switched to " << git_info.branches[git_info.current_branch] << endl;
+    // delay of 1 sec
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+}
+
+void GitLite::git_new_branch() {
+    cout << "Enter branch name: ";
+    path branch_name;
+    cin >> branch_name;
+    // check if branch already exists
+    for (int i = 0; i < git_info.branches.get_size(); i++) {
+        if (git_info.branches[i] == branch_name) {
+            cout << "Branch already exists\n";
+            return;
+        }
+    }
+
+    git_info.add_branch(branch_name);
+    git_info.write_meta();
+
+    // create al necessary dirs
+    std::filesystem::create_directory(git_info.repo_name / branch_name);
+    std::filesystem::create_directory(git_info.repo_name / branch_name / "tree");
+    std::filesystem::create_directory(git_info.repo_name / branch_name / "commit");
+    std::filesystem::create_directory(git_info.repo_name / branch_name / "merkle");
+
+    // copy required data only
+    std::filesystem::copy(git_info.repo_name / git_info.branches[git_info.current_branch] / "tree",
+        git_info.repo_name / branch_name / "tree", std::filesystem::copy_options::recursive);
+    std::filesystem::copy(git_info.repo_name / git_info.branches[git_info.current_branch] / "merkle",
+        git_info.repo_name / branch_name / "merkle", std::filesystem::copy_options::recursive);
+
+    branch_meta.branch_name = branch_name;
+    branch_meta.commit_root = "NULL";
+    branch_meta.write_meta(git_info.repo_name);
 }
 
 void GitLite::run() {
@@ -186,6 +298,10 @@ void GitLite::load_csv_into_tree() {
         branch_meta.tree_root = AVL::insert_avl(csv_path,
             git_info.repo_name / git_info.branches[git_info.current_branch] / "tree");
         structure_info.tree_type = tree_type::AVL;
+
+        // sync with disc
+        branch_meta.write_meta(git_info.repo_name);
+        structure_info.write_meta(git_info.repo_name);
     }
     else if (structure_info.tree_type == tree_type::RBT) {
         // RBT::insert_rbt();

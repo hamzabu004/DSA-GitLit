@@ -5,11 +5,13 @@
 #ifndef GITLITE_H
 #define GITLITE_H
 #include "STL_STRUCTURES/MyString.h"
+#include "STL_STRUCTURES/MyList.h"
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
-#include "csv_meta.h"
 #include "GLOBALS.h"
+#include "Utils/file_operations.h"
 
 using std::filesystem::path;
 
@@ -18,21 +20,96 @@ using std::cout;
 using std::cin;
 
 class GitLite {
+    // commit_struct staging_area
+
     struct {
-      path tree_root;
-      path merkle_root;
-      path commit_root;
+        path branch_name = "NULL";
+        path tree_root = "NULL";
+        path merkle_root = "NULL";
+        path commit_root = "NULL";
+
+        void write_meta(path repo) {
+            std::fstream file;
+            open_file(file, repo / branch_name / "branch_meta", ios::out);
+            file << branch_name << endl;
+            file << tree_root << endl;
+            file << merkle_root << endl;
+            file << commit_root;
+            file.close();
+        }
+        void read_meta(path repo, path branch) {
+            std::fstream file;
+            open_file(file, repo / branch / "branch_meta", ios::in);
+            file >> branch_name;
+            file >> tree_root;
+            file >> merkle_root;
+            file >> commit_root;
+            file.close();
+        }
     } branch_meta;
+
     struct {
         path repo_name;
-        MyList<MyString> branches;
+        MyList<path> branches;
         int current_branch = 0;
+
+        void add_branch(path branch_name) {
+            branches.insert(branch_name);
+        }
+        void write_meta() {
+            std::fstream file;
+            open_file(file, repo_name / "git_meta", ios::out);
+            file << repo_name << endl;
+            file << branches.get_size() << endl;
+            for (int i = 0; i < branches.get_size(); i++) {
+                file << branches[i] << endl;
+            }
+            file << current_branch;
+            file.close();
+        }
+        void read_meta() {
+            std::fstream file;
+            open_file(file, repo_name / "git_meta", ios::in);
+            file >> repo_name;
+            int size;
+            file >> size;
+            // move_pointer_ahead(file);
+            for (int i = 0; i < size; i++) {
+                path branch;
+                file >> branch;
+                branches.insert(branch);
+            }
+            file >> current_branch;
+            file.close();
+        }
     } git_info;
+
     struct {
         int selected_col;
         int tree_type;
         int btree_order;
-        MyString hash;
+        int hash;
+
+        void write_meta(path repo) {
+            std::fstream file;
+            open_file(file, repo / "structure_meta", ios::out);
+            file << selected_col << endl;
+            file << tree_type << endl;
+            file << btree_order << endl;
+            file << hash;
+            file.close();
+        }
+
+
+        void read_meta(path repo) {
+            std::fstream file;
+            open_file(file, repo / "structure_meta", ios::in);
+            file >> selected_col;
+            file >> tree_type;
+            file >> btree_order;
+            file >> hash;
+            file.close();
+        }
     } structure_info;
 
     // commit structure
@@ -50,11 +127,13 @@ public:
     void init_menu();
     void git_menu();
     void git_init();
-    void git_add();
+    void git_list_branches();
+    // related to commit
     void git_commit();
     void git_log();
     void git_checkout();
-    void git_reset();
+    void git_new_branch();
+
     void run();
 
     // testing
