@@ -28,7 +28,7 @@ struct AVL_NODE {
     AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
-        file_stream << node.key << endl;
+        file_stream << node.key ;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
             file_stream << node.data[i];
