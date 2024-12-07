@@ -111,6 +111,66 @@ void GitLite::insert_tree() {
     }
 }
 
+void GitLite::update_tree() {
+    cout << "Enter key to update: ";
+    MyString search_key;
+    std::cin.ignore();
+    cin >> search_key;
+
+    // search for key
+    if (structure_info.tree_type == tree_type::AVL) {
+        path key_node = AVL::search_avl(branch_meta.tree_root, search_key);
+        if (key_node == "NULL") {
+            cout << "Key not found\n";
+            return;
+        }
+        else {
+            AVL_NODE<MyString> node;
+            AVL::read_avl_node(key_node, node);
+            prettyPrint(structure_info.col_names);
+            for (int i = 0; i < node.data.get_size(); i++) {
+                prettyPrint(node.data[i]);
+            }
+
+            // select field
+            int col;
+            cout << "Enter column number to update: ";
+            cin >> col;
+
+
+            // ask for which row to update
+            int row = 0;
+            cout << "Enter row number to update (" << 0  << "-"<< node.data.get_size() - 1  << "). -1 for all : ";
+            cin >> row;
+
+            // get new field value
+            MyString new_data;
+            cout << "Enter new value: ";
+            cin >> new_data;
+
+
+            // for all row
+            if (row == -1) {
+                for (int i = 0; i < node.data.get_size(); i++) {
+                    update_row(node.data[i], new_data, col);
+                }
+            }
+            else {
+                update_row(node.data[row], new_data, col);
+            }
+
+            // write to disk
+            AVL::write_avl_node(key_node, node);
+        }
+    }
+    else if (structure_info.tree_type == tree_type::RBT) {
+        // RBT::update_rbt_tree();
+    }
+    else if (structure_info.tree_type == tree_type::BTree) {
+        // BTree::update_btree_tree();
+    }
+}
+
 
 void GitLite::tree_menu() {
     while (true) {
@@ -139,7 +199,7 @@ void GitLite::tree_menu() {
                 insert_tree();
                 break;
             case 4:
-                // update_tree();
+                update_tree();
                     break;
             case 5:
                 // delete_tree();

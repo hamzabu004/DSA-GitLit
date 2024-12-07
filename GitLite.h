@@ -137,6 +137,8 @@ public:
 
     void insert_tree();
 
+    void update_tree();
+
     void tree_menu();
 
     void main_menu();

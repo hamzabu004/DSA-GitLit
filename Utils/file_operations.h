@@ -107,6 +107,7 @@ inline MyString get_column(MyString row, int col) {
 }
 
 
+
 inline void prettyPrint(MyString row) {
     const int columnWidth = 20;
 
@@ -131,6 +132,39 @@ inline void prettyPrint(MyList<MyString> fields) {
     cout << " ";
 
     cout << endl;
+}
+
+inline MyString get_str_row(MyList<MyString> fields) {
+    MyString row;
+    for (int i = 0; i < fields.get_size(); i++) {
+        row += fields[i];
+        if (i != fields.get_size() - 1) {
+            row += ",";
+        }
+    }
+    return row;
+}
+
+inline void update_row(MyString& row, MyString updated_val, int col_num) {
+    int i = 0;
+    int j = 0;
+    MyString new_row;
+    while (row[i] != '\0') {
+        if (row[i] == ',') {
+            j++;
+            i++;
+            continue;
+        }
+        if (j == col_num) {
+            new_row += updated_val;
+            i += updated_val.size();
+        }
+        else {
+            new_row.insert_char(row[i]);
+        }
+        i++;
+    }
+    file << new_row;
 }
 
 
