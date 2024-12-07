@@ -7,7 +7,6 @@
 
 #include "../STL_STRUCTURES/MyList.h"
 #include "../STL_STRUCTURES/MyString.h"
-// #include "../Advance_Structures/AVL.h"
 
 #include <filesystem>
 #include <fstream>
@@ -61,7 +60,7 @@ inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode =
     return true;
 }
 
-inline void move_pointer_ahead(fstream& file, int n) {
+inline void move_pointer_ahead(fstream& file, int n = 1) {
     file.seekp(n, ios::cur);
 }
 

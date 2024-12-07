@@ -80,6 +80,10 @@ public:
         return str[i];
     }
 
+    char * c_str() {
+        return str;
+    }
+
     // comparisons
     bool operator==(const MyString &s) const {
         if (len != s.len) return false;
