@@ -80,16 +80,21 @@ void GitLite::insert_tree() {
         new_node.left_child = "NULL";
         new_node.right_child = "NULL";
         MyString data;
+        // read all fields
+        std::cin.ignore();
         for (int i = 0; i < structure_info.num_cols; i++) {
             MyString field;
+            // comma for all except first
             if (i != 0) {
                 data.insert_char(',');
             }
 
             cout << "Enter " << structure_info.col_names[i] << ": ";
-            std::cin.ignore();
+
             cin >> field;
 
+            data += field;
+            // set key field
             if (i == structure_info.selected_col) {
                 new_node.key = field;
             }
