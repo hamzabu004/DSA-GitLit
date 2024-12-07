@@ -126,7 +126,15 @@ class GitLite {
 
     // commit structure
     path csv_path;
-	MyString title_str = "   ________.__  __  .____    .__  __          \n  /  _____/|__|/  |_|    |   |__|/  |_  ____ \n /   \\  ___|  \\   __\\    |   |  \\   __\\/ __ \\ \n \\    \\_\\  \\  ||  | |    |___|  ||  | \\  ___/ \n  \\______  /__||__| |_______ \\__||__|  \\___  > \n         \\/                 \\/             \\/";
+    MyString title_str = RED;
+    title_str += "   ________.__  __";
+    // LITE_COLOR  "  .____.    __  __          \n";
+    // RESET;
+    // title_str += GIT_COLOR"  /  _____/|__|/  |_" LITE_COLOR "|    |   |__|/  |_  ____ \n" RESET;
+    // title_str += GIT_COLOR " /   \\  ___|  \\   __\\" LITE_COLOR "    |   |  \\   __\\/ __ \\ \n" RESET;
+    // title_str += GIT_COLOR " \\    \\_\\  \\  ||  |" LITE_COLOR" |    |___|  ||  | \\  ___/ \n" RESET;
+    // title_str += GIT_COLOR "  \\______  /__||__|" LITE_COLOR " |_______ \\__||__|  \\___  > \n" RESET;
+    // title_str += GIT_COLOR "         \\/                 " LITE_COLOR "\\/             \\/" RESET;
 
 public:
     void welcome();

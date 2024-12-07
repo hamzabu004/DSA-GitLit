@@ -129,6 +129,7 @@ public:
     }
 
     MyString &operator+=(const MyString & field);
+    MyString operator+=(const char* arr);
 };
 
 inline MyString & MyString::operator+=(const MyString &field) {
@@ -138,6 +139,16 @@ inline MyString & MyString::operator+=(const MyString &field) {
     delete[] str;
     str = new_str;
     len += field.len;
+    return *this;
+}
+
+inline MyString MyString::operator+=(const char *arr) {
+    char* new_str = new char[len + strlen(arr) + 1];
+    strcpy(new_str, arr);
+    if (str != nullptr) strcpy(new_str + len, str);
+    delete[] str;
+    str = new_str;
+    len += strlen(arr);
     return *this;
 }
 
