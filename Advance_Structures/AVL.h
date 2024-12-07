@@ -9,7 +9,6 @@
 #include <filesystem>
 #include <fstream>
 
-#include "CSV.h"
 #include "../Utils/file_operations.h"
 
 
@@ -23,7 +22,6 @@ using namespace std::filesystem;
 
 template<typename T>
 struct AVL_NODE {
-
     T key;
     MyList<csv_row> data;
     path left_child;
