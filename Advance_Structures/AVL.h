@@ -312,9 +312,32 @@ public:
         print_avl_tree<T>(curr_node.right_child);
     }
 
+    static path insert_avl(path csv_path, path parents_folder, int col = 0) {
+        fstream file(csv_path, ios::in);
+        AVL::parents_folder = parents_folder;
+        // ignore columns
+        char temp[10000];
+        // ignore first line of columns
+        file.getline(temp, 10000);
+        path parent = "NULL";
+        path avl_tree = "NULL";
+        int i = 0;
+        while (!file.eof() && temp[0] != '\n') {
 
+            AVL_NODE<MyString> new_node;
 
-
+            file.getline(temp, 10000);
+            if (temp[0] == '\0') break;
+            MyString row = temp;
+            // cout << row << endl;
+            new_node.data.insert(row);
+            new_node.key = get_column(row, col);
+            // cout << "Inserting node " << i++ << endl;
+            avl_tree = insert_avl_node(new_node, avl_tree);
+        }
+        cout << endl << "end of teh world" << endl;
+        return avl_tree;
+    }
 };
 
 path AVL::parents_folder = "";
