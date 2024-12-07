@@ -19,23 +19,34 @@ using std::cin;
 
 class GitLite {
     struct {
-        // pointer to tree
-        path root_path{};
-        int btree_order{};
-    }tree_info;
+      path tree_root;
+      path merkle_root;
+      path commit_root;
+    } branch_meta;
     struct {
+        path repo_name;
         MyList<MyString> branches;
-        MyString current_branch;
+        int current_branch = 0;
     } git_info;
     struct {
-        CSV_META csv_meta;
-        int tree = tree_type::AVL;
-        int hash{};
+        int selected_col;
+        int tree_type;
+        int btree_order;
+        MyString hash;
     } structure_info;
+
+    // commit structure
+    path csv_path;
 	MyString title_str = "   ________.__  __  .____    .__  __          \n  /  _____/|__|/  |_|    |   |__|/  |_  ____ \n /   \\  ___|  \\   __\\    |   |  \\   __\\/ __ \\ \n \\    \\_\\  \\  ||  | |    |___|  ||  | \\  ___/ \n  \\______  /__||__| |_______ \\__||__|  \\___  > \n         \\/                 \\/             \\/";
 
 public:
     void welcome();
+
+    void print_tree();
+
+    void tree_menu();
+
+    void main_menu();
     void init_menu();
     void git_menu();
     void git_init();
@@ -45,6 +56,11 @@ public:
     void git_checkout();
     void git_reset();
     void run();
+
+    // testing
+    void fill_initial_csv();
+
+    void load_csv_into_tree();
 };
 
 #endif //GITLITE_H
