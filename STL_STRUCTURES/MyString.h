@@ -128,8 +128,18 @@ public:
         return is;
     }
 
-
+    MyString &operator+=(const MyString & field);
 };
+
+inline MyString & MyString::operator+=(const MyString &field) {
+    char* new_str = new char[len + field.len + 1];
+    if (str != nullptr) strcpy(new_str, str);
+    strcpy(new_str + len, field.str);
+    delete[] str;
+    str = new_str;
+    len += field.len;
+    return *this;
+}
 
 
 #endif //MYSTRING_H
