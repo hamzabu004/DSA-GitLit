@@ -310,7 +310,7 @@ public:
         AVL_NODE<MyString> curr_node;
         read_avl_node(root, curr_node);
         print_avl_tree<T>(curr_node.left_child);
-        cout << curr_node.key << endl;
+
         print_avl_tree<T>(curr_node.right_child);
     }
 
@@ -361,4 +361,5 @@ public:
 };
 
 path AVL::parents_folder = "";
+
 #endif //AVL_H

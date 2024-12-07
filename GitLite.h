@@ -85,6 +85,8 @@ class GitLite {
     } git_info;
 
     struct {
+        int num_cols;
+        MyList<MyString> col_names;
         int selected_col;
         int tree_type;
         int btree_order;
@@ -93,6 +95,10 @@ class GitLite {
         void write_meta(path repo) {
             std::fstream file;
             open_file(file, repo / "structure_meta", ios::out);
+            file << num_cols << endl;
+            for (int i = 0; i < col_names.get_size(); i++) {
+                file << col_names[i];
+            }
             file << selected_col << endl;
             file << tree_type << endl;
             file << btree_order << endl;
@@ -100,10 +106,16 @@ class GitLite {
             file.close();
         }
 
-
         void read_meta(path repo) {
             std::fstream file;
             open_file(file, repo / "structure_meta", ios::in);
+            file >> num_cols;
+            file.get();
+            for (int i = 0; i < num_cols; i++) {
+                MyString col_name;
+                file >> col_name;
+                col_names.insert(col_name);
+            }
             file >> selected_col;
             file >> tree_type;
             file >> btree_order;
@@ -126,6 +138,9 @@ public:
     void main_menu();
     void init_menu();
     void git_menu();
+
+    void initial_data_collection();
+
     void git_init();
     void git_list_branches();
     // related to commit
