@@ -39,6 +39,33 @@ public:
         }
         size++;
     }
+    void remove (int index) {
+        int i = 0;
+        TreeNode<T>* temp = head;
+
+        while (temp) {
+            if (i == index) {
+                if (temp == head) {
+                    head = temp->next;
+                    delete temp;
+                    size--;
+                    return;
+                } else {
+                    TreeNode<T>* prev = head;
+                    while (prev->next != temp) {
+                        prev = prev->next;
+                    }
+                    prev->next = temp->next;
+                    delete temp;
+                    size--;
+                    return;
+                }
+            }
+            i++;
+            temp = temp->next;
+        }
+    }
+
     void remove_element(T data) {
         if (head == nullptr) {
             throw std::underflow_error("List is empty");
