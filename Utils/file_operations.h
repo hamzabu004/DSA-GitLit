@@ -151,20 +151,26 @@ inline void update_row(MyString& row, MyString updated_val, int col_num) {
     MyString new_row;
     while (row[i] != '\0') {
         if (row[i] == ',') {
+            new_row.insert_char(',');
             j++;
             i++;
             continue;
         }
         if (j == col_num) {
+
             new_row += updated_val;
-            i += updated_val.size();
+            while (row[i] != ',' && row[i] != '\0') {
+                i++;
+            }
+            i--;
+            j++;
         }
         else {
             new_row.insert_char(row[i]);
         }
         i++;
     }
-    file << new_row;
+    row = new_row;
 }
 
 

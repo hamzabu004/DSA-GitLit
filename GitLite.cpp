@@ -145,6 +145,7 @@ void GitLite::update_tree() {
 
             // get new field value
             MyString new_data;
+            cin.ignore();
             cout << "Enter new value: ";
             cin >> new_data;
 
