@@ -6,9 +6,10 @@
 #include "../../GitLite.h"
 
 int main() {
-    GitLite git;
-    git.fill_initial_csv();
-    git.git_init();
-
-    git.main_menu();
+//    GitLite git;
+//    git.fill_initial_csv();
+//    git.git_init();
+//
+//    git.main_menu();
+    cout << get_current_date_time();
 }

@@ -100,8 +100,16 @@ void GitLite::insert_tree() {
             }
             // data.insert(field);
         }
+
         new_node.data.insert(data);
+        MyString staging_data = "INSERT\n";
+        staging_data += data;
+
+        staging_area.operations += staging_data;
+        staging_area.write_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+
         branch_meta.tree_root = AVL::insert_avl_node(new_node, branch_meta.tree_root);
+        branch_meta.write_meta(git_info.repo_name);
     }
     else if (structure_info.tree_type == tree_type::RBT) {
         // RBT::insert_rbt_tree();
@@ -149,16 +157,24 @@ void GitLite::update_tree() {
             cout << "Enter new value: ";
             cin >> new_data;
 
+            MyString staging_data = "UPDATE\n";
+
 
             // for all row
             if (row == -1) {
                 for (int i = 0; i < node.data.get_size(); i++) {
+                    staging_data += node.data[i];
                     update_row(node.data[i], new_data, col);
                 }
             }
             else {
+                staging_data += node.data[row];
                 update_row(node.data[row], new_data, col);
+
             }
+
+            staging_area.operations += staging_data;
+            staging_area.write_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
 
             // write to disk
             AVL::write_avl_node(key_node, node);

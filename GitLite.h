@@ -21,12 +21,15 @@ using std::cin;
 
 class GitLite {
     // commit_struct staging_area
-
     struct {
         path branch_name = "NULL";
         path tree_root = "NULL";
         path merkle_root = "NULL";
         path commit_root = "NULL";
+        MyList<path> commits;
+
+
+
 
         void write_meta(path repo) {
             std::fstream file;
@@ -34,7 +37,11 @@ class GitLite {
             file << branch_name << endl;
             file << tree_root << endl;
             file << merkle_root << endl;
-            file << commit_root;
+            file << commit_root << endl;
+            file << commits.get_size() << endl;
+            for (int i = 0; i < commits.get_size(); i++) {
+                file << commits[i] << endl;
+            }
             file.close();
         }
         void read_meta(path repo, path branch) {
@@ -44,9 +51,52 @@ class GitLite {
             file >> tree_root;
             file >> merkle_root;
             file >> commit_root;
+            int size;
+            file >> size;
+            for (int i = 0; i < size; i++) {
+                path commit;
+                file >> commit;
+                commits.insert(commit);
+            }
+
             file.close();
         }
     } branch_meta;
+
+    struct {
+        MyString message;
+        // timestamp
+        MyString timestamp;
+        MyList<MyString> changes;
+
+        void write_meta(path repo, path branch) {
+            timestamp = std::to_string(std::chrono::system_clock::now().time_since_epoch().count()).c_str();
+            std::fstream file;
+            open_file(file, repo / branch / "commit" / timestamp, ios::out);
+            file << message << endl;
+            file << timestamp << endl;
+            file << changes.get_size() << endl;
+            for (int i = 0; i < changes.get_size(); i++) {
+                file << changes[i] << endl;
+            }
+            file.close();
+        }
+        void read_meta(path repo, path branch, path commit) {
+            std::fstream file;
+            open_file(file, repo / branch / "commit" / commit, ios::in);
+            file >> message;
+            file >> timestamp;
+            int size;
+            file >> size;
+            for (int i = 0; i < size; i++) {
+                MyString change;
+                file >> change;
+                changes.insert(change);
+            }
+            file.close();
+        }
+
+    }commit;
 
     struct {
         path repo_name;
@@ -55,6 +105,7 @@ class GitLite {
 
         void add_branch(path branch_name) {
             branches.insert(branch_name);
+            write_meta();
         }
         void write_meta() {
             std::fstream file;
@@ -83,6 +134,16 @@ class GitLite {
             file.close();
         }
     } git_info;
+
+    // commit related
+
+    void add_commit(path commit) {
+        if (branch_meta.commits.get_size() == 0) {
+            branch_meta.commit_root = commit;
+        }
+        branch_meta.commits.insert(commit);
+        branch_meta.write_meta(git_info.repo_name);
+    }
 
     struct {
         int num_cols;
@@ -124,10 +185,37 @@ class GitLite {
         }
     } structure_info;
 
+    struct {
+        MyString operations;
+
+        void write_meta(path repo, path branch) {
+            std::fstream file;
+            open_file(file, repo / branch / "staging_area", ios::out);
+            file << operations << endl;
+            file.close();
+        }
+        void read_meta(path repo, path branch) {
+            std::fstream file;
+            open_file(file, repo / branch / "staging_area", ios::in);
+            int size;
+            file >> size;
+            for (int i = 0; i < size; i++) {
+                MyString operation;
+                file >> operation;
+                operations.insert(operation);
+            }
+            file.close();
+        }
+
+        void clear() {
+            operations.clear();
+        }
+    } staging_area;
+
     // commit structure
     path csv_path;
-    MyString title_str = RED;
-    title_str += "   ________.__  __";
+    MyString title_str = REDC;
+//    title_str += "   ________.__  __";
     // LITE_COLOR  "  .____.    __  __          \n";
     // RESET;
     // title_str += GIT_COLOR"  /  _____/|__|/  |_" LITE_COLOR "|    |   |__|/  |_  ____ \n" RESET;
