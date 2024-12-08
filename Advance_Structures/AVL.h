@@ -231,7 +231,7 @@ public:
     }
 
 
-    static path insert_avl_node(AVL_NODE<MyString> &node, filesystem::path root_path) {
+   static path insert_avl_node(AVL_NODE<MyString> &node, filesystem::path root_path) {
 
         static fstream file;
         if (root_path == "NULL") {
@@ -241,8 +241,6 @@ public:
             write_avl_node(node_path, node);
             return node_path;
         }
-
-
 
         AVL_NODE<MyString> curr_node;
         read_avl_node(root_path, curr_node);
