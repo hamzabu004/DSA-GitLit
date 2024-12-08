@@ -7,10 +7,10 @@
 path insert_avl() {
     // current time
     path csv_path = "data.csv";
-    // path csv_path = "/media/ht/01DB003D88B96CA0/Sem3/Data/Project/dataset20.csv";
+     // path csv_path = "/media/ht/01DB003D88B96CA0/Sem3/Data/Project/dataset20.csv";
     fstream file(csv_path, ios::in);
 
-    AVL::parents_folder = "master/tree";
+    AVL::parents_folder = "master";
     // ignore columns
     char temp[10000];
     // ignore first line of columns
@@ -48,7 +48,8 @@ path insert_avl() {
 // }
 
 int main() {
+    AVL::parents_folder = "master";
+    AVL::print_avl_tree<MyString>("62");
 
-    insert_avl();
     return 0;
 }
