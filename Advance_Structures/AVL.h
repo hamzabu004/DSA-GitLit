@@ -357,6 +357,126 @@ public:
             return search_avl(curr_node.right_child, key);
         }
     }
+
+    static path min_node_path(path root_path) {
+        AVL_NODE<MyString> curr_node;
+        read_avl_node(root_path, curr_node);
+        while (curr_node.left_child != "NULL") {
+            root_path = curr_node.left_child;
+            read_avl_node(curr_node.left_child, curr_node);
+        }
+        return root_path;
+    }
+
+    static path delete_avl_node(path root_path, MyString &key) {
+
+        // in case of no match
+        if (root_path == "NULL")
+            return root_path;
+        // read curr node
+        AVL_NODE<MyString> curr_node;
+        read_avl_node(root_path, curr_node);
+
+        // sewarch in left subtree if key is < node
+        if (key < curr_node.key) {
+            path left_child = curr_node.left_child;
+            curr_node.left_child = AVL::delete_avl_node(curr_node.left_child, key);
+            write_avl_node(root_path, curr_node);
+        }
+
+        // search in right if key is > node
+        else if (key > curr_node.key) {
+            path right_child = curr_node.right_child;
+            curr_node.right_child = AVL::delete_avl_node(curr_node.right_child, key);
+            write_avl_node(root_path, curr_node);
+        }
+
+        // key is found
+        else {
+            // deletion of node (NOT HAVING TWO CHILDREN)
+            if ((curr_node.left_child == "NULL") ||
+                (curr_node.right_child == "NULL")) {
+                path new_path = curr_node.left_child != "NULL" ? curr_node.left_child : curr_node.right_child;
+                if (new_path == "NULL") {
+                    filesystem::remove(AVL::parents_folder / root_path);
+                    root_path = "NULL";
+                } else {
+                    filesystem::remove(AVL::parents_folder / root_path);
+                    root_path = new_path;
+                    read_avl_node(root_path, curr_node);
+                }
+            } else {
+                // path with two children
+                path rights_leftmost = AVL::min_node_path(curr_node.right_child);
+                AVL_NODE<MyString> replacement_node;
+                // Copy the inorder successor's
+                read_avl_node(rights_leftmost, replacement_node);
+                replacement_node.left_child = curr_node.left_child;
+                // remove the right's leftmost node
+                replacement_node.right_child = delete_avl_node(curr_node.right_child, replacement_node.key);
+                // remove the current node
+
+                filesystem::rename(AVL::parents_folder / root_path, AVL::parents_folder / rights_leftmost);
+                // write it to current node
+                root_path = rights_leftmost;
+                write_avl_node(root_path, replacement_node);
+
+                curr_node = replacement_node;
+            }
+        }
+
+        // if no child case, no balancing needed
+        if (root_path == "NULL")
+            return root_path;
+
+
+        // height updation
+        curr_node.height = 1 + max(AVL::tree_height(curr_node.left_child),
+                                   AVL::tree_height(curr_node.right_child));
+
+        AVL::write_avl_node(root_path, curr_node);
+
+
+
+        short balance_factor = get_balance_factor(root_path);
+        if (abs(balance_factor) > 1 ) {
+            AVL_NODE<MyString> curr_node;
+            read_avl_node(root_path, curr_node);
+            switch (balance_factor) {
+                case 2: {
+                    // cout << "Left shift" << endl;
+                    path right_child = curr_node.right_child;
+                    // Right in left
+                    if (get_balance_factor(right_child) == -1) {
+                        right_child = right_rotate(right_child);
+                        curr_node.right_child = right_child.c_str();
+                        write_avl_node(root_path, curr_node);
+                    }
+                    root_path = left_rotate(root_path);
+                    break;
+                }
+                case -2:{
+                    //
+                    path left_child = curr_node.left_child;
+                    if (get_balance_factor(left_child) == 1) {
+                        left_child = left_rotate(left_child);
+                        curr_node.left_child = left_child;
+                        write_avl_node(root_path, curr_node);
+                    }
+                    // cout << "Right Shift" << endl;
+                    root_path = right_rotate
+                    (root_path);
+                    break;
+                }
+                default: ;
+            }
+
+        }
+
+        return root_path;
+    }
+
+
 };
 
 path AVL::parents_folder = "";
