@@ -49,7 +49,13 @@ path insert_avl() {
 
 int main() {
     AVL::parents_folder = "master";
-    AVL::print_avl_tree<MyString>("62");
 
+    path root = insert_avl();
+    AVL::print_avl_tree<MyString>(root);
+    MyString key = "62";
+    root = AVL::delete_avl_node(root, key);
+    cout << "After deletion" << endl;
+    AVL::print_avl_tree<MyString>(root);
+    cout << root;
     return 0;
 }
