@@ -29,9 +29,6 @@ public:
         path commit_root = "NULL";
         MyList<path> commits;
 
-
-
-
         void write_meta(path repo) {
             std::fstream file;
             open_file(file, repo / branch_name / "branch_meta", ios::out);
@@ -80,22 +77,23 @@ public:
             file.close();
         }
         void read_meta(path repo, path branch, path commit) {
+            changes = "";
             std::fstream file;
             open_file(file, repo / branch / "commit" / commit, ios::in);
             file >> message;
             file >> timestamp;
-            int size;
-            file >> size;
+
             char line[1000];
             file.getline(line, 1000);
             while (!file.eof()) {
                 changes += line;
                 changes += "\n";
+                file.getline(line, 1000);
             }
             file.close();
         }
 
-    }commit;
+    } commit;
 
     struct {
         path repo_name;
@@ -249,6 +247,8 @@ public:
     void search_tree();
 
     void insert_tree();
+
+    void delete_tree();
 
     void update_tree();
 
