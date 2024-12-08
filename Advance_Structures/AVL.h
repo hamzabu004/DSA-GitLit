@@ -161,11 +161,11 @@ public:
 
         path root_left_right_child = left_ram.right_child;
         curr_node.left_child = root_left_right_child;
-        curr_node.height = max(node_height(root_left_right_child) + 1, curr_node.height);
+        curr_node.height = max(node_height(root_left_right_child), node_height(curr_node.right_child)) + 1;
         write_avl_node(root, curr_node);
 
         left_ram.right_child = root;
-        left_ram.height = max(node_height(root) + 1, left_ram.height);
+        left_ram.height = max(node_height(root), node_height(left_ram.left_child)) + 1;
         write_avl_node(root_left_child, left_ram);
 
         return root_left_child;
@@ -184,11 +184,11 @@ public:
 
         path root_right_left_child = right_ram.left_child;
         curr_node.right_child = root_right_left_child;
-        curr_node.height = max(node_height(root_right_left_child) + 1, curr_node.height);
+        curr_node.height = max(node_height(root_right_left_child), node_height(curr_node.left_child)) + 1;
         write_avl_node(root, curr_node);
 
         right_ram.left_child = root;
-        right_ram.height = max(node_height(root) + 1, right_ram.height);
+        right_ram.height = max(node_height(root), node_height(right_ram.right_child)) + 1;
         write_avl_node(root_right_child, right_ram);
 
         return root_right_child;
