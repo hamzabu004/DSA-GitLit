@@ -7,8 +7,8 @@
 
 
 #define RESET "\033[0m"
-#define BLACK "\033[30m"
-#define RED "\033[31m"
+#define BLACKC "\033[30m"
+#define REDC "\033[31m"
 #define GREEN "\033[32m"
 #define YELLOW "\033[33m"
 #define BLUE "\033[34m"
@@ -46,7 +46,7 @@
 #define BG_BRIGHT_CYAN "\033[106m"
 #define BG_BRIGHT_WHITE "\033[107m"
 
-#define GIT_COLOR RED
+#define GIT_COLOR REDC
 #define LITE_COLOR BRIGHT_BLUE
 
 
