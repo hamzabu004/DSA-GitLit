@@ -12,6 +12,8 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <chrono>
+#include <ctime>
 
 using std::fstream;
 using namespace std::filesystem;
@@ -106,8 +108,6 @@ inline MyString get_column(MyString row, int col) {
     return column;
 }
 
-
-
 inline void prettyPrint(MyString row) {
     const int columnWidth = 20;
 
@@ -173,8 +173,11 @@ inline void update_row(MyString& row, MyString updated_val, int col_num) {
     row = new_row;
 }
 
-
-
+inline MyString get_current_date_time() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    return std::ctime(&now_c);
+}
 
 
 
