@@ -11,6 +11,9 @@ add_executable(Hashing_MAIN
         ../../STL_STRUCTURES/MyList.h
 
         ../../Advance_Structures/AVL.h
+        ../../Advance_Structures/Merkel.h
+        ../../STL_STRUCTURES/MyString.h
+        ../../Utils/hasher.h
 
 )
 

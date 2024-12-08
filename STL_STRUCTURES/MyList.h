@@ -11,11 +11,11 @@ using std::cout;
 using std::endl;
 
 
-
 template <typename T>
 struct TreeNode {
     T data;
     TreeNode* next;
+    TreeNode(const T& data) : data(data), next(nullptr) {}
 };
 
 template <typename T>
@@ -27,7 +27,7 @@ public:
     // insert, remove, print, search, size, empty, clear
     MyList(): head(nullptr), tail(nullptr), size(0) {}
     void insert(T data) {
-        TreeNode<T>* new_node = new TreeNode<T>;
+        TreeNode<T>* new_node = new TreeNode<T>(data);
         new_node->data = data;
         new_node->next = nullptr;
         if (head == nullptr) {
@@ -79,19 +79,24 @@ public:
         }
         return temp->data;
     }
-    MyList(const MyList<T>& list): head(nullptr), tail(nullptr), size(0) {
-        TreeNode<T>* temp = list.head;
+     MyList(const MyList& other) : head(nullptr), tail(nullptr), size(0) {
+        TreeNode<T>* temp = other.head;
         while (temp != nullptr) {
             insert(temp->data);
             temp = temp->next;
         }
     }
-    MyList<T>& operator=(const MyList<T>& list) {
-        clear();
-        TreeNode<T>* temp = list.head;
-        while (temp != nullptr) {
-            insert(temp->data);
-            temp = temp->next;
+
+
+    // Assignment operator
+    MyList& operator=(const MyList& other) {
+        if (this != &other) {
+            clear();
+            TreeNode<T>* temp = other.head;
+            while (temp != nullptr) {
+                insert(temp->data);
+                temp = temp->next;
+            }
         }
         return *this;
     }

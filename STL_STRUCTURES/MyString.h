@@ -130,6 +130,32 @@ public:
 
     MyString &operator+=(const MyString & field);
     MyString operator+=(const char* arr);
+
+    MyString operator+(const char* s) const {
+        MyString result;
+        result.len = len + strlen(s);
+        result.str = new char[result.len + 1];
+        strcpy(result.str, str);
+        strcat(result.str, s);
+        return result;
+    }
+
+    friend MyString operator+(const char* lhs, const MyString& rhs) {
+        MyString result(lhs);
+        result.len = strlen(lhs) + rhs.len;
+        result.str = new char[result.len + 1];
+        strcat(result.str, lhs);
+        strcat(result.str, rhs.str);
+        return result;
+    }
+    MyString operator+(const MyString& rhs) {
+        MyString result(rhs);
+        result.len = rhs.len + len;
+        result.str = new char[result.len + 1];
+        strcpy(result.str, str);
+        strcat(result.str, rhs.str);
+        return result;
+    }
 };
 
 inline MyString & MyString::operator+=(const MyString &field) {
@@ -150,6 +176,9 @@ inline MyString MyString::operator+=(const char *arr) {
     str = new_str;
     len += strlen(arr);
     return *this;
+
+
+
 }
 
 
