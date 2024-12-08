@@ -277,6 +277,8 @@ public:
 
     void load_csv_into_tree();
 
+    void generate_merkle();
+
     void append_stage(MyString);
 };
 

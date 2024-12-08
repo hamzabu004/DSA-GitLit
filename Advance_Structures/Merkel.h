@@ -11,6 +11,7 @@
 #include "../STL_STRUCTURES/MyList.h"
 #include <fstream>
 #include <sstream>
+#include <openssl/evp.h>
 
 class MerkleNode {
 public:

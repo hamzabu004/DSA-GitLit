@@ -4,7 +4,6 @@
 
 #ifndef HASHER_H
 #define HASHER_H
-#pragma once
 
 #include <iostream>
 #include <iomanip>
@@ -16,6 +15,7 @@
 #include <stdexcept>
 #include "../STL_STRUCTURES/MyString.h"
 
+using namespace std;
 // string hash
 MyString sha256(const MyString& str) {
     unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -71,5 +71,12 @@ MyString file_hash(const std::filesystem::path& file_path) {
     return os.str().c_str();
 }
 
+inline int isntructor_hash(MyString str) {
+    int hash = 1;
+    for (int i  = 0; i < str.size(); i++) {
+        hash *= int(str[i]);
+    }
+    return hash % 29;
+}
 
 #endif //HASHER_H

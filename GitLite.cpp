@@ -8,6 +8,7 @@
 
 #include "GLOBALS.h"
 #include "Advance_Structures/AVL.h"
+#include "Advance_Structures/Merkel.h"
 #include "Utils/file_operations.h"
 
 void title_printer() {
@@ -364,9 +365,9 @@ void GitLite::initial_data_collection() {
 
     cout << "Enter preferred hash type (0 for custom hash, 1 for SHA256): ";
     cin >> structure_info.hash;
-    if (structure_info.hash != hash_type::I_HASH && structure_info.hash != hash_type::SHA256) {
+    if (structure_info.hash != hash_type::I_HASH && structure_info.hash != hash_type::shA256) {
         cout << "Invalid hash type. Selecting default_hash\n";
-        structure_info.hash = hash_type::SHA256;
+        structure_info.hash = hash_type::shA256;
     }
 }
 
@@ -414,6 +415,7 @@ void GitLite::git_init() {
         // write op will write to disk
         // yet to decide structure of files
         load_csv_into_tree();
+        generate_merkle();
     }
 
 
@@ -521,7 +523,7 @@ void GitLite::run() {
 
 void GitLite::fill_initial_csv() {
     structure_info.tree_type = tree_type::AVL;
-    structure_info.hash = hash_type::SHA256;
+    structure_info.hash = hash_type::shA256;
     structure_info.btree_order = 0;
     git_info.repo_name = "test_repo";
     structure_info.selected_col = 0;
@@ -530,7 +532,7 @@ void GitLite::fill_initial_csv() {
 
 void GitLite::fill_initial_csv_exisiting(path repo_name) {
     structure_info.tree_type = tree_type::AVL;
-    structure_info.hash = hash_type::SHA256;
+    structure_info.hash = hash_type::shA256;
     structure_info.btree_order = 0;
     structure_info.selected_col = 0;
     csv_path = "duta.csv";
@@ -556,4 +558,23 @@ void GitLite::load_csv_into_tree() {
         // BTree::insert_btree();
     }
 
+}
+
+
+void GitLite::generate_merkle(){
+    path root_file_path = git_info.repo_name / git_info.branches[git_info.current_branch] / "tree" / branch_meta.tree_root;
+
+    std::filesystem::path merkleFolder = git_info.repo_name / git_info.branches[git_info.current_branch] / "merkle";
+    std::filesystem::path avlBasePath = git_info.repo_name / git_info.branches[git_info.current_branch] / "tree";
+
+    // Ensure the Merkle folder exists
+    if (!std::filesystem::exists(merkleFolder)) {
+        std::filesystem::create_directories(merkleFolder);
+    }
+
+    MerkleTree merkleTree(avlBasePath);
+    branch_meta.merkle_root = merkleTree.buildMerkle(root_file_path, merkleFolder).c_str();
+
+    branch_meta.write_meta(git_info.repo_name);
+    std::cout << std::endl << "Root Hash: " << branch_meta.merkle_root << std::endl;
 }

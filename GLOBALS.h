@@ -65,7 +65,7 @@ enum rdt_color {
 
 enum hash_type {
     I_HASH,
-    SHA256
+    shA256
 };
 
 // csv data
