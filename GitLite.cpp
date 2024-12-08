@@ -149,6 +149,66 @@ void GitLite::insert_tree() {
     }
 }
 
+void GitLite::delete_tree() {
+    cout << "Enter key to update: ";
+    MyString search_key;
+    std::cin.ignore();
+    cin >> search_key;
+
+    // search for key
+    if (structure_info.tree_type == tree_type::AVL) {
+        path key_node = AVL::search_avl(branch_meta.tree_root, search_key);
+        if (key_node == "NULL") {
+            cout << "Key not found\n";
+            return;
+        }
+        else {
+            AVL_NODE<MyString> node;
+            AVL::read_avl_node(key_node, node);
+            prettyPrint(structure_info.col_names);
+            for (int i = 0; i < node.data.get_size(); i++) {
+                prettyPrint(node.data[i]);
+            }
+
+
+            // ask for which row to delete
+            int row = 0;
+            cout << "Enter row number to delete (" << 0  << "-"<< node.data.get_size() - 1  << "). -1 for all : ";
+            cin >> row;
+
+            staging_area.operations += "DELETE\n";
+
+            if (row == -1 || node.data.get_size() == 1) {
+
+
+
+                branch_meta.tree_root = AVL::delete_avl_node(branch_meta.tree_root, search_key);
+                for (int i = 0; i < node.data.get_size(); i++) {
+                    staging_area.operations += node.data[i];
+                    staging_area.operations += "\n";
+                }
+
+                // write to disk the change in tree
+                branch_meta.write_meta(git_info.repo_name);
+
+            }
+            else {
+                // staging sht
+                staging_area.operations += node.data[row];
+                staging_area.operations += "\n";
+                staging_area.write_meta(git_info.repo_name / git_info.branches[git_info.current_branch]);
+                // staging end
+                node.data.remove(row);
+                AVL::write_avl_node(key_node, node);
+            }
+
+            // saving the staging area to disk
+            staging_area.write_meta(git_info.repo_name / git_info.branches[git_info.current_branch]);
+
+        }
+    }
+}
+
 void GitLite::update_tree() {
     cout << "Enter key to update: ";
     MyString search_key;
@@ -250,7 +310,7 @@ void GitLite::tree_menu() {
                 update_tree();
                     break;
             case 5:
-                // delete_tree();
+                delete_tree();
                     break;
             case 6:
                 return;
