@@ -144,8 +144,8 @@ inline MyString & MyString::operator+=(const MyString &field) {
 
 inline MyString MyString::operator+=(const char *arr) {
     char* new_str = new char[len + strlen(arr) + 1];
-    strcpy(new_str, arr);
-    if (str != nullptr) strcpy(new_str + len, str);
+    if (str != nullptr) strcpy(new_str , str);
+    strcpy(new_str+ len, arr);
     delete[] str;
     str = new_str;
     len += strlen(arr);

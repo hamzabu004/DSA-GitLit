@@ -10,8 +10,36 @@
 #include "Advance_Structures/AVL.h"
 #include "Utils/file_operations.h"
 
+void title_printer() {
+    MyList<MyString> title_str;
+    title_str.insert( "   ________.__  __");
+    title_str.insert("  .____    .__  __          \n");
+    title_str.insert("  /  _____/|__|/  |_");
+    title_str.insert("|    |   |__|/  |    ---\n");
+    title_str.insert(" /   \\  ___|  \\   __\\");
+    title_str.insert("    |   |  \\   __\\/ __ \\ \n");
+    title_str.insert(" \\    \\_\\  \\  ||  | ");
+    title_str.insert("|    |___|  ||  | \\  ___/ \n");
+    title_str.insert("  \\______  /__||__| ");
+    title_str.insert("|_______ \\__||__|  \\___  > \n");
+    title_str.insert("         \\/                 ");
+    title_str.insert("\\/             \\/\n");
+
+    for (int i = 0; i < title_str.get_size(); i++) {
+        cout << GIT_COLOR;
+        cout << title_str[i];
+        i++;
+        cout << LITE_COLOR;
+        cout << title_str[i];
+
+    }
+    cout << RESET;
+    cout << endl;
+
+}
+
 void GitLite::welcome() {
-    cout << title_str << endl;
+    title_printer();
 
     cout << "Welcome to GitLite\n";
     cout << "Enter repo name: ";
@@ -102,11 +130,12 @@ void GitLite::insert_tree() {
         }
 
         new_node.data.insert(data);
-        MyString staging_data = "INSERT\n";
-        staging_data += data;
 
-        staging_area.operations += staging_data;
-        staging_area.write_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+        staging_area.operations += "INSERT\n";
+        staging_area.operations += data;
+        staging_area.operations += "\n";
+        // write to disk
+        staging_area.write_meta(git_info.repo_name / git_info.branches[git_info.current_branch]);
 
         branch_meta.tree_root = AVL::insert_avl_node(new_node, branch_meta.tree_root);
         branch_meta.write_meta(git_info.repo_name);
@@ -153,8 +182,8 @@ void GitLite::update_tree() {
 
             // get new field value
             MyString new_data;
-            cin.ignore();
             cout << "Enter new value: ";
+            cin.ignore();
             cin >> new_data;
 
             MyString staging_data = "UPDATE\n";
@@ -174,7 +203,8 @@ void GitLite::update_tree() {
             }
 
             staging_area.operations += staging_data;
-            staging_area.write_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+            staging_area.operations += "\n";
+            staging_area.write_meta(git_info.repo_name / git_info.branches[git_info.current_branch]);
 
             // write to disk
             AVL::write_avl_node(key_node, node);
@@ -192,7 +222,7 @@ void GitLite::update_tree() {
 void GitLite::tree_menu() {
     while (true) {
         system("clear");
-        cout << title_str << endl;
+        title_printer();
         cout << "###Tree Menu###\n";
         cout << "1. Print Tree\n";
         cout << "2. Search Tree\n";
@@ -230,7 +260,7 @@ void GitLite::tree_menu() {
 void GitLite::main_menu() {
     while (true) {
         system("clear");
-        cout << title_str << endl;
+        title_printer();
         cout << "###Main Menu###\n";
         cout << "Current Branch: " << git_info.branches[git_info.current_branch]
             // << "is uncommit changes\n" << is_stage_empty() ? "No" : "Yes"
@@ -261,7 +291,7 @@ void GitLite::git_menu() {
     // merge, branch, commit, log, checkout
     while (true) {
         system("clear");
-        cout << title_str << endl;
+        title_printer();
         cout << "###Git Menu###\n";
         cout << "Current Branch: " << git_info.branches[git_info.current_branch] << endl;
         cout << "1. New Branch\n";
@@ -284,10 +314,10 @@ void GitLite::git_menu() {
                 git_list_branches();
                     break;
             case 3:
-                // git_commit();
+                git_commit();
                     break;
             case 4:
-                // git_log();
+                git_log();
                     break;
             case 5:
                 git_checkout();
@@ -395,6 +425,43 @@ void GitLite::git_list_branches() {
     }
 }
 
+void GitLite::git_commit() {
+    if (staging_area.operations == "") {
+        cout << "No changes to commit\n";
+        return;
+    }
+    MyString commit_message;
+    cout << "Enter commit message: ";
+    cin.ignore();
+    string temp;
+    getline(cin, temp);
+    commit_message = temp.c_str();
+    commit.message = commit_message;
+    commit.changes = staging_area.operations;
+    staging_area.clear(git_info.repo_name, git_info.branches[git_info.current_branch]);
+    commit.write_meta(git_info.repo_name, git_info.branches[git_info.current_branch]);
+    branch_meta.commits.insert(commit.timestamp);
+    branch_meta.write_meta(git_info.repo_name);
+    cout << "Commit successful\n";
+    cout << "#############################" << endl;
+    cout << "Commit ID: " << commit.timestamp << endl;
+    cout << "Message: " << commit.message << endl;
+    cout << commit.changes;
+    cout << "#############################" << endl;
+}
+
+void GitLite::git_log() {
+    cout << "Total Commits: " << branch_meta.commits.get_size() << endl;
+    for (int i = 0; i < branch_meta.commits.get_size(); i++) {
+        commit.read_meta(git_info.repo_name, git_info.branches[git_info.current_branch], branch_meta.commits[i]);
+        cout << "#############################" << endl;
+        cout << "Commit ID: " << commit.timestamp << endl;
+        cout << "Message: " << commit.message << endl;
+        cout << commit.changes;
+        cout << "#############################" << endl;
+    }
+}
+
 void GitLite::git_checkout() {
     // if staging area is not empty
     // first commit or ignore changes after last commit
@@ -458,7 +525,17 @@ void GitLite::fill_initial_csv() {
     structure_info.btree_order = 0;
     git_info.repo_name = "test_repo";
     structure_info.selected_col = 0;
-    csv_path = "data.csv";
+    csv_path = "duta.csv";
+}
+
+void GitLite::fill_initial_csv_exisiting(path repo_name) {
+    structure_info.tree_type = tree_type::AVL;
+    structure_info.hash = hash_type::SHA256;
+    structure_info.btree_order = 0;
+    structure_info.selected_col = 0;
+    csv_path = "duta.csv";
+    git_info.repo_name = repo_name;
+
 }
 
 void GitLite::load_csv_into_tree() {
@@ -478,6 +555,5 @@ void GitLite::load_csv_into_tree() {
     else if (structure_info.tree_type == tree_type::BTree) {
         // BTree::insert_btree();
     }
-
 
 }

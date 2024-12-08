@@ -20,6 +20,7 @@ using std::cout;
 using std::cin;
 
 class GitLite {
+public:
     // commit_struct staging_area
     struct {
         path branch_name = "NULL";
@@ -64,21 +65,18 @@ class GitLite {
     } branch_meta;
 
     struct {
-        MyString message;
+        MyString message = "";
         // timestamp
-        MyString timestamp;
-        MyList<MyString> changes;
+        path timestamp;
+        MyString changes;
 
         void write_meta(path repo, path branch) {
-            timestamp = std::to_string(std::chrono::system_clock::now().time_since_epoch().count()).c_str();
+            timestamp = get_current_date_time();
             std::fstream file;
             open_file(file, repo / branch / "commit" / timestamp, ios::out);
             file << message << endl;
             file << timestamp << endl;
-            file << changes.get_size() << endl;
-            for (int i = 0; i < changes.get_size(); i++) {
-                file << changes[i] << endl;
-            }
+            file << changes << endl;
             file.close();
         }
         void read_meta(path repo, path branch, path commit) {
@@ -88,10 +86,11 @@ class GitLite {
             file >> timestamp;
             int size;
             file >> size;
-            for (int i = 0; i < size; i++) {
-                MyString change;
-                file >> change;
-                changes.insert(change);
+            char line[1000];
+            file.getline(line, 1000);
+            while (!file.eof()) {
+                changes += line;
+                changes += "\n";
             }
             file.close();
         }
@@ -186,11 +185,27 @@ class GitLite {
     } structure_info;
 
     struct {
-        MyString operations;
+        MyString operations = "";
 
-        void write_meta(path repo, path branch) {
+        void insert(const MyString& data) {
+            operations += "INSERT\n";
+            operations += data;
+            operations += "\n";
+        }
+        void update(MyString data) {
+            operations += "UPDATE\n";
+            operations += data;
+            operations += "\n";
+        }
+        void remove(MyString data) {
+            operations += "REMOVE\n";
+            operations += data;
+            operations += "\n";
+        }
+
+        void write_meta(const path& parent) {
             std::fstream file;
-            open_file(file, repo / branch / "staging_area", ios::out);
+            open_file(file, parent / "staging_area", ios::out);
             file << operations << endl;
             file.close();
         }
@@ -201,28 +216,30 @@ class GitLite {
             file >> size;
             for (int i = 0; i < size; i++) {
                 MyString operation;
-                file >> operation;
-                operations.insert(operation);
+                // read line by lien till end
+                char line[1000];
+                file.getline(line, 1000);
+                while (!file.eof() ) {
+                    operation += line;
+                    operation += "\n";
+                    file.getline(line, 1000);
+                }
             }
             file.close();
         }
 
-        void clear() {
-            operations.clear();
+        void clear(path repo, path branch) {
+            // clear staging file
+            std::fstream file;
+            open_file(file, repo / branch / "staging_area", ios::out);
+            file.clear();
+            file.close();
+            operations = "";
         }
     } staging_area;
 
     // commit structure
     path csv_path;
-    MyString title_str = REDC;
-//    title_str += "   ________.__  __";
-    // LITE_COLOR  "  .____.    __  __          \n";
-    // RESET;
-    // title_str += GIT_COLOR"  /  _____/|__|/  |_" LITE_COLOR "|    |   |__|/  |_  ____ \n" RESET;
-    // title_str += GIT_COLOR " /   \\  ___|  \\   __\\" LITE_COLOR "    |   |  \\   __\\/ __ \\ \n" RESET;
-    // title_str += GIT_COLOR " \\    \\_\\  \\  ||  |" LITE_COLOR" |    |___|  ||  | \\  ___/ \n" RESET;
-    // title_str += GIT_COLOR "  \\______  /__||__|" LITE_COLOR " |_______ \\__||__|  \\___  > \n" RESET;
-    // title_str += GIT_COLOR "         \\/                 " LITE_COLOR "\\/             \\/" RESET;
 
 public:
     void welcome();
@@ -256,7 +273,11 @@ public:
     // testing
     void fill_initial_csv();
 
+    void fill_initial_csv_exisiting(path repo_name);
+
     void load_csv_into_tree();
+
+    void append_stage(MyString);
 };
 
 #endif //GITLITE_H
