@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <iomanip>
 
 using std::fstream;
 using namespace std::filesystem;
@@ -18,6 +19,9 @@ using namespace std::filesystem;
 using std::ios;
 using std::string;
 using std::getline;
+using std::left;
+using std::setfill;
+using std::setw;
 
 
 inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
@@ -42,6 +46,22 @@ inline MyList<MyString> get_columns(const std::filesystem::path& csv_path) {
     }
     return columns;
 }
+
+inline MyList<MyString> get_columns(MyString row) {
+
+    MyList<MyString> columns;
+    int i = 0;
+    while (row[i] != '\0') {
+        MyString col_name;
+        while (row[i] != ',' && row[i] != '\0') {
+            col_name.insert_char(row[i]);
+            i++;
+        }
+        columns.insert(col_name);
+        i++;
+    }
+    return columns;
+}
 // read specified entries for specific columns
 
 //open file funciton
@@ -62,6 +82,95 @@ inline bool open_file (fstream& file, std::filesystem::path csv_path, int mode =
 
 inline void move_pointer_ahead(fstream& file, int n = 1) {
     file.seekp(n, ios::cur);
+}
+
+inline void move_pointer_ahead(fstream& file) {
+    move_pointer_ahead(file, 1);
+}
+
+inline MyString get_column(MyString row, int col) {
+    MyString column;
+    int i = 0;
+    int j = 0;
+    while (row[i] != '\0') {
+        if (row[i] == ',') {
+            j++;
+            i++;
+            continue;
+        }
+        if (j == col) {
+            column.insert_char(row[i]);
+        }
+        i++;
+    }
+    return column;
+}
+
+
+
+inline void prettyPrint(MyString row) {
+    const int columnWidth = 20;
+
+    MyList<MyString> fields = get_columns(row);
+    for (int i = 0; i < fields.get_size(); i++) {
+
+        cout << setw(20);
+        cout << fields[i] << setfill(' ');;
+    }
+    cout << " ";
+
+    cout << endl;
+}
+
+inline void prettyPrint(MyList<MyString> fields) {
+    const int columnWidth = 20;
+    for (int i = 0; i < fields.get_size(); i++) {
+
+        cout << setw(20);
+        cout << fields[i] << setfill(' ');;
+    }
+    cout << " ";
+
+    cout << endl;
+}
+
+inline MyString get_str_row(MyList<MyString> fields) {
+    MyString row;
+    for (int i = 0; i < fields.get_size(); i++) {
+        row += fields[i];
+        if (i != fields.get_size() - 1) {
+            row += ",";
+        }
+    }
+    return row;
+}
+
+inline void update_row(MyString& row, MyString updated_val, int col_num) {
+    int i = 0;
+    int j = 0;
+    MyString new_row;
+    while (row[i] != '\0') {
+        if (row[i] == ',') {
+            new_row.insert_char(',');
+            j++;
+            i++;
+            continue;
+        }
+        if (j == col_num) {
+
+            new_row += updated_val;
+            while (row[i] != ',' && row[i] != '\0') {
+                i++;
+            }
+            i--;
+            j++;
+        }
+        else {
+            new_row.insert_char(row[i]);
+        }
+        i++;
+    }
+    row = new_row;
 }
 
 

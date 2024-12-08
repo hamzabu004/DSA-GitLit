@@ -28,10 +28,10 @@ struct AVL_NODE {
     AVL_NODE(): left_child("NULL"), right_child("NULL"), height(0) {}
 
     friend fstream& operator<<(fstream &file_stream,  AVL_NODE &node) {
-        file_stream << node.key ;
+        file_stream << node.key << endl;
         file_stream << node.data.get_size() << endl;
         for (int i = 0; i < node.data.get_size(); i++) {
-            file_stream << node.data[i];
+            file_stream << node.data[i] << endl;
         }
 
         file_stream << node.left_child << endl;
@@ -45,7 +45,7 @@ struct AVL_NODE {
         file_stream >> node.key;
         int size;
         file_stream >> size;
-        move_pointer_ahead(file_stream);
+        move_pointer_ahead(file_stream, 1);
         for (int i = 0; i < size; i++) {
             MyString row;
             file_stream >> row;
@@ -55,7 +55,7 @@ struct AVL_NODE {
         file_stream >> node.left_child;
         file_stream >> node.right_child;
         file_stream >> node.height;
-        move_pointer_ahead(file_stream);
+        move_pointer_ahead(file_stream, 1);
         return file_stream;
     }
 };
@@ -231,7 +231,7 @@ public:
     }
 
 
-    static path insert_avl_node(AVL_NODE<MyString> &node, filesystem::path root_path) {
+   static path insert_avl_node(AVL_NODE<MyString> &node, filesystem::path root_path) {
 
         static fstream file;
         if (root_path == "NULL") {
@@ -241,8 +241,6 @@ public:
             write_avl_node(node_path, node);
             return node_path;
         }
-
-
 
         AVL_NODE<MyString> curr_node;
         read_avl_node(root_path, curr_node);
@@ -308,29 +306,15 @@ public:
     static void print_avl_tree(path root) {
         if (root == "NULL") return;
         AVL_NODE<MyString> curr_node;
-        read_avl_node(root, curr_node);
+        read_avl_node( root, curr_node);
         print_avl_tree<T>(curr_node.left_child);
-        cout << curr_node.key << endl;
+        for (int i = 0; i < curr_node.data.get_size(); i++) {
+            prettyPrint(curr_node.data[i]);
+        }
         print_avl_tree<T>(curr_node.right_child);
     }
 
-    static MyString get_column(MyString row, int col) {
-        int i = 0;
-        int j = 0;
-        MyString key;
-        while (row[i] != '\0') {
-            if (row[i] == ',') {
-                j++;
-                i++;
-                continue;
-            }
-            if (j == col) {
-                key.insert_char(row[i]);
-            }
-            i++;
-        }
-        return key;
-    }
+
 
     static path insert_avl(path csv_path, path parents_folder, int col = 0) {
         fstream file(csv_path, ios::in);
@@ -359,8 +343,22 @@ public:
         return avl_tree;
     }
 
-
+    static path search_avl(path root, MyString key) {
+        if (root == "NULL") return "NULL";
+        AVL_NODE<MyString> curr_node;
+        read_avl_node(root, curr_node);
+        if (curr_node.key == key) {
+            return root;
+        }
+        else if (curr_node.key > key) {
+            return search_avl(curr_node.left_child, key);
+        }
+        else {
+            return search_avl(curr_node.right_child, key);
+        }
+    }
 };
 
 path AVL::parents_folder = "";
+
 #endif //AVL_H
