@@ -8,9 +8,9 @@
 
 int main() {
 
-    std::filesystem::path root_file_path = "/home/ht/CLionProjects/DSA-GitLit/Testing/Hashing/cmake-build-debug/newAVLTrees/danny smith";
-    std::filesystem::path merkleFolder = "/home/ht/CLionProjects/DSA-GitLit/Testing/Hashing/cmake-build-debug/merkle";
-    std::filesystem::path avlBasePath = "/home/ht/CLionProjects/DSA-GitLit/Testing/Hashing/cmake-build-debug/newAVLTrees";
+    std::filesystem::path root_file_path = "DBMS";
+    std::filesystem::path merkleFolder = "/home/ht/CLionProjects/DSA-GitLit/Testing/Hashing/cmake-build-debug/hana/merkle";
+    std::filesystem::path avlBasePath = "/home/ht/CLionProjects/DSA-GitLit/cmake-build-debug/hana/master/tree";
 
     // Ensure the Merkle folder exists
     if (!std::filesystem::exists(merkleFolder)) {

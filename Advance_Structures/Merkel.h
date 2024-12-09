@@ -13,6 +13,8 @@
 #include <sstream>
 #include <openssl/evp.h>
 
+#include "AVL.h"
+
 class MerkleNode {
 public:
     MyString hash;
@@ -60,35 +62,24 @@ public:
 
 	// Inorder traversal of the AVL tree
     void inOrder(const std::filesystem::path& file_path, const std::filesystem::path& merkleFolder) {
-        if (file_path.empty()) return;
 
-        std::ifstream file(file_path);
-        if (!file.is_open()) return;
-
-        MyList<MyString> lines;
-        char line[1000];
-        while (!file.eof()) {
-            file.getline(line, 1000);
-            lines.insert(line);
-        }
-
+        if (file_path == "NULL") return;
+        AVL_NODE<MyString> node;
+        fstream file;
+        open_file(file, avlBasePath / file_path, ios::in);
+        file >> node;
 
         file.close();
 
-        if (lines.get_size() < 5) return;
 
-		// line-3, line-4, line-5 avl file: Save the left and right child paths
-        std::filesystem::path left_child_path = avlBasePath / lines[3] ;
-        std::filesystem::path right_child_path = avlBasePath / lines[4];
-
-        inOrder(left_child_path, merkleFolder);
+        inOrder(node.left_child, merkleFolder);
 
 		// line-1 avl file: Save the hash of the file
-        MyString fileHash = file_hash(file_path);
+        MyString fileHash = file_hash(avlBasePath / file_path);
         merkleLeafList.insert(MerkleNode(fileHash, file_path));
         saveMerkleNode(fileHash, merkleFolder, file_path);
 
-        inOrder(right_child_path, merkleFolder);
+        inOrder(node.right_child, merkleFolder);
     }
 
     void saveMerkleNode(const MyString& hash, const std::filesystem::path& merkleFolder,
@@ -97,7 +88,7 @@ public:
         const std::filesystem::path& rightParentPath = "") {
         std::filesystem::path fileName = merkleFolder / hash ;
 
-        std::ofstream outFile(fileName.generic_string());
+        std::ofstream outFile(fileName);
         if (!outFile) {
             std::cout << "Failed to create file: " << fileName.generic_string() << std::endl;
             return;
@@ -122,7 +113,7 @@ public:
         outFile << (rightParentPath.empty() ? "null" : rightParentPath.generic_string()) << std::endl;
 
         outFile.close();
-        std::cout << "Created file: " << fileName.generic_string() << std::endl;
+        std::cout << "Created file: " << fileName << std::endl;
     }
 
 	// Build the Merkle tree - combination of the above two functions buildMerkleLeafsList() and buildMerkleTree()

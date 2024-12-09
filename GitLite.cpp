@@ -475,7 +475,7 @@ void GitLite::git_init() {
         // write op will write to disk
         // yet to decide structure of files
         load_csv_into_tree();
-        generate_merkle();
+        // generate_merkle();
     }
 
 
